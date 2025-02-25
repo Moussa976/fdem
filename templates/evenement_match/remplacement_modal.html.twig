@@ -1,0 +1,20 @@
+{{ form_start(formRemplacement, {'attr': {'id': 'formAjouterRamplacant'}}) }}
+<div class="mb-3 row">
+	{{ form_label(formRemplacement.joueur_sortant) }}
+	<div class="col-12">
+		{{ form_widget(formRemplacement.joueur_sortant) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(formRemplacement.joueur_entrant) }}
+	<div class="col-12">
+		{{ form_widget(formRemplacement.joueur_entrant) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(formRemplacement.minute) }}
+	<div class="col-12">
+		{{ form_widget(formRemplacement.minute) }}
+	</div>
+</div>
+{{ form_end(formRemplacement) }}

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Joueur
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5 pt-4">
+		<h1 class="mb-4 text-center">Joueur
+			{{ joueur.nom }}</h1>
+		<div class="row g-2">
+			<div class="col-12 my-4">
+				<a class="btn btn-sm btn-secondary" href="{{ path('app_joueur_index') }}">Retour à la liste des joueurs</a>
+			</div>
+			<div class="col-12 col-md-3">
+				{{ include('joueur/_delete_form.html.twig') }}
+				<a class="btn btn-sm btn-success mt-1" href="{{ path('app_joueur_edit', {'id': joueur.id}) }}">Mofidier</a>
+			</div>
+			<div class="col-12 col-md-9">
+
+				<div class="card mb-3" style="max-width: 540px;">
+					<div class="row">
+						<div class="col-4 text-center align-middle">
+							<img src="{{ asset('images/'~ joueur.equipe.logo) }}" alt="{{ joueur.equipe.nom}}" title="{{ joueur.equipe.nom}}" style="height:auto; max-width:100px;">
+						</div>
+						<div class="col-8">
+							<div class="card-body table-responsive">
+								<h5 class="card-title">#{{ joueur.id }}
+									-
+									{{ joueur.nom }}</h5>
+								<table class="table">
+									<tbody>
+										<tr>
+											<th>
+												<i class='fas fa-soccer-ball'></i>
+											</th>
+											<th>
+												<i class='fas fa-square' style='color:yellow'></i>
+											</th>
+											<th>
+												<i class='fas fa-square' style='color:red'></i>
+											</th>
+										</tr>
+										<tr>
+											<td>{{ statJoueur.nbButs }}</td>
+											<td>{{ statJoueur.nbCartonsJaunes }}</td>
+											<td>{{ statJoueur.nbCartonsRouges }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

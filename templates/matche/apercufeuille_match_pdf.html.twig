@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Feuille de match :
+			{{ matche.equipe1.nom }}
+			VS
+			{{ matche.equipe2.nom }}</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				font-size: 12px;
+			}
+
+			.flex {
+				display: flex;
+				padding: 2px;
+			}
+
+			.w-25 {
+				width: 25%;
+			}
+
+			.logo {
+				width: 100px;
+				height: 100px;
+				border: 1px solid black;
+				padding: 0;
+			}
+
+			.center {
+				text-align: center;
+			}
+
+			.w-30 {
+				width: 30%;
+			}
+
+			.w-50 {
+				width: 50%;
+			}
+
+			.mt-20px {
+				margin-top: 20px;
+				padding: 5px;
+			}
+
+			.p-5 {
+				padding: 5px;
+			}
+
+			table,
+			th,
+			td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+
+			th {
+				background-color: #2fa4e7;
+				color: white;
+			}
+
+			.ligneTitulaires {
+				background-color: #2fe78e;
+				color: rgb(0, 0, 0);
+			}
+
+			.ligneRemplacants {
+				background-color: #dc775b;
+				color: rgb(0, 0, 0);
+			}
+
+			table,
+			tr {
+				width: 100%;
+			}
+
+			.text-vertical {
+				writing-mode: vertical-rl;
+				text-orientation: sideways;
+			}
+
+			.border-none {
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<div class="row justify-content-between">
+				<div class="col-4">
+					<a class="btn btn-secondary" href="{{ path('app_matche_index') }}">Retour</a>
+				</div>
+				<div class="col-4">
+					{% if app.user %}
+						<div class="dropdown">
+							{% if 'ROLE_ADMIN' in app.user.roles %}
+								<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Actions
+								</button>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterBut">Ajouter un but
+											<i class='fas fa-soccer-ball'></i>
+										</a>
+									</li>
+									<li>
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterCarton">Ajouter un carton
+											<i class='fas fa-square'></i>
+										</a>
+									</li>
+									<li>
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterRemplacement">Ajouter un remplacement
+											<i class='fas fa-rotate'></i>
+										</a>
+									</li>
+									<li>
+										<button id="signArbitre" class="btn btn-primary dropdown-item" data-type="arbitre" {% if matche.feuilleMatch.signatureArbitre %} disabled {% endif %}>
+											{% if matche.feuilleMatch.signatureArbitre  %}
+												✅ Arbitre a signé ✅
+											{% else %}
+												✍️ Arbitre, je signe
+											{% endif %}
+										</button>
+									</li>
+									<li>
+										<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_terminer', {'id': matche.id}) }}" class="btn btn-danger">Terminer le match</a>
+									</li>
+									<li>
+										<a type="button" class="btn btn-warning dropdown-item" data-bs-toggle="modal" data-bs-target="#modalObservationArbitre">
+											Observations Arbitre
+										</a>
+									</li>
+									<li>
+										<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" class="btn btn-primary">Télécharger Feuille PDF</a>
+									</li>
+								</ul>
+							{% else %}
+								{% if matche.statut == "termine" %}
+									<ul class="dropdown-menu">
+										<li>
+											<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" class="btn btn-primary">Télécharger Feuille PDF</a>
+										</li>
+									</ul>
+								{% endif %}
+							{% endif %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+			<section class="text-center">
+				<h2 class="center my-2">Feuille de match</h2>
+			</section>
+			<div class="container">
+				<div class="row">
+					<div class="col-12 col-md-3">
+						<div class="logo"><img class="logo" src="{{asset('/images/ascm-logo.png')}}" alt="Logo de l'association"></div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="mt-20px">
+							<table>
+								<tr>
+									<td class="w-30">Type de match :</td>
+									<td>{{ matche.type }}</td>
+								</tr>
+								<tr>
+									<td class="w-30">Date du match :</td>
+									<td>{{ matche.ladate|date('d/m/Y à H:i') }}</td>
+								</tr>
+							</table>
+						</div>
+						<div class="mt-20px">
+							<table>
+								<tr>
+									<td class="center" rowspan="2">{{ matche.equipe1.nom }}</td>
+									<td class="center">Score</td>
+									<td class="center" rowspan="2">{{ matche.equipe2.nom }}</td>
+								</tr>
+								<tr>
+									<td class="center">{{ matche.getScoreEquipe1 }}
+										-
+										{{ matche.getScoreEquipe2 }}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="col-12 col-md-3">
+						<div class="mt-20px">
+							<table>
+								<tr>
+									<th colspan="2" class="center">Arbitres</th>
+								</tr>
+								<tr>
+									<td class="w-50">central :
+									</td>
+									<td>{{ matche.arbitreCentral }}</td>
+								</tr>
+								<tr>
+									<td class="w-50">Assistant 1 :</td>
+									<td>{{ matche.arbitreAssistant1 }}</td>
+								</tr>
+								<tr>
+									<td class="w-50">Assistant 2 :</td>
+									<td>{{ matche.arbitreAssistant2 }}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container mt-3">
+				<div class="row">
+					{% set maxLignes = 11 %}
+					{% set joueursEquipe1 = [] %}
+					{% for joueurId in matche.feuilleMatch.titulairesEquipe1 %}
+						{% set joueursEquipe1 = joueursEquipe1|merge([joueurs[joueurId]]) %}
+					{% endfor %}
+					{% set joueursEquipe2 = [] %}
+					{% for joueurId in matche.feuilleMatch.titulairesEquipe2 %}
+						{% set joueursEquipe2 = joueursEquipe2|merge([joueurs[joueurId]]) %}
+					{% endfor %}
+					<div class="col-12 col-md-6 table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th colspan="7">Nom de l’équipe recevante :
+										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeRecevante" aria-expanded="false" aria-controls="equipeRecevante">{{ matche.equipe1.nom }}</button>
+									</th>
+								</tr>
+								<tr>
+									<th></th>
+									<th>N°</th>
+									<th>Nom</th>
+									<th>Avertis</th>
+									<th>Expulsé</th>
+									<th>Remplacé</th>
+									<th>But(s)</th>
+								</tr>
+							</thead>
+							<tbody class="collapse" id="equipeRecevante">
+								{% for i in 0..(maxLignes - 1) %}
+									<tr class="ligneTitulaires">
+										{% if joueursEquipe1[i] is defined %}
+											{% if i == 0 %}
+												<th rowspan="{{loop.length}}" class="text-vertical">Titulaires</th>
+											{% endif %}
+											<td>{{ joueursEquipe1[i].numero }}</td>
+											<td>{{ joueursEquipe1[i].nom }}</td>
+											<td>
+												{% for carton in matche.cartons %}
+													{% if carton.joueur.id == joueursEquipe1[i].id and carton.couleur == 'jaune' %}
+														X
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for carton in matche.cartons %}
+													{% if carton.joueur.id == joueursEquipe1[i].id and carton.couleur == 'rouge' %}
+														X
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for remplacement in matche.remplacements %}
+													{% if remplacement.joueurSortant.id == joueursEquipe1[i].id %}
+														N°{{ remplacement.joueurEntrant.numero }}
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for but in matche.buts %}
+													{% if but.joueur.id == joueursEquipe1[i].id %}
+														{{ but.minute }}'
+														{% if but.type == "tab" %}({{ but.type }})
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</td>
+										{% else %}
+											<td colspan="7"></td>
+										{% endif %}
+									{% endfor %}
+
+
+								</tr>
+								{% for joueur in matche.feuilleMatch.remplacantsEquipe1 %}
+									<tr class="ligneRemplacants">
+										{% if loop.index == 1 %}
+											<th rowspan="{{loop.length}}" class="text-vertical">Remplaçants</th>
+										{% endif %}
+										<td>{{ joueurs[joueur].numero }}</td>
+										<td>{{ joueurs[joueur].nom }}</td>
+										<td>
+											{% for carton in matche.cartons %}
+												{% if carton.joueur.id == joueurs[joueur].id and carton.couleur == 'jaune' %}
+													X
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td>
+											{% for carton in matche.cartons %}
+												{% if carton.joueur.id == joueurs[joueur].id and carton.couleur == 'rouge' %}
+													X
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td></td>
+										<td>
+											{% for but in matche.buts %}
+												{% if but.joueur.id == joueurs[joueur].id %}
+													{{ but.minute }}'
+													{% if but.type == "tab" %}({{ but.type }})
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</td>
+									</tr>
+								{% endfor %}
+
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="3">Nom du capitaine ou dirigeant :</td>
+									<td colspan="4" class="text-center">Signatures</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										{% for dirigeant in matche.feuilleMatch.dirigeantsEquipe1 %}
+											-
+											{{ dirigeant }}<br>
+										{% endfor %}
+									</td>
+									<td colspan="2">avant match :
+										<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="avantequipe1" {% if matche.feuilleMatch.signatureavantEquipe1 %} disabled {% endif %}>
+											{% if matche.feuilleMatch.signatureavantEquipe1 %}
+												signé ✅
+											{% else %}
+												✍️ Je signe
+											{% endif %}
+										</button>
+									</td>
+									<td colspan="2">après match :
+										{% if matche.statut == "terminé" %}
+											<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="apresequipe1" {% if matche.feuilleMatch.signatureapresEquipe1 %} disabled {% endif %}>
+												{% if matche.feuilleMatch.signatureapresEquipe1 %}
+													signé ✅
+												{% else %}
+													✍️ Je signe
+												{% endif %}
+											</button>
+										{% endif %}
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+
+						<div class="card border-warning">
+							<div class="card-body">
+								<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">
+									Réserves Équipe 1
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th colspan="7">Nom de l’équipe visiteur :
+										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeVisiteuse" aria-expanded="false" aria-controls="equipeVisiteuse">{{ matche.equipe2.nom }}</button>
+									</th>
+								</tr>
+								<tr>
+									<th></th>
+									<th>N°</th>
+									<th>Nom</th>
+									<th>Avertis</th>
+									<th>Expulsé</th>
+									<th>Remplacé</th>
+									<th>But(s)</th>
+								</tr>
+							</thead>
+							<tbody class="collapse" id="equipeVisiteuse">
+
+								{% for i in 0..(maxLignes - 1) %}
+									<tr class="ligneTitulaires">
+										{% if joueursEquipe2[i] is defined %}
+											{% if i == 0 %}
+												<th rowspan="{{loop.length}}" class="text-vertical">Titulaires</th>
+											{% endif %}
+											<td>{{ joueursEquipe2[i].numero }}</td>
+											<td>{{ joueursEquipe2[i].nom }}</td>
+											<td>
+												{% for carton in matche.cartons %}
+													{% if carton.joueur.id == joueursEquipe2[i].id and carton.couleur == 'jaune' %}
+														X
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for carton in matche.cartons %}
+													{% if carton.joueur.id == joueursEquipe2[i].id and carton.couleur == 'rouge' %}
+														X
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for remplacement in matche.remplacements %}
+													{% if remplacement.joueurSortant.id == joueursEquipe2[i].id %}
+														N°{{ remplacement.joueurEntrant.numero }}
+													{% endif %}
+												{% endfor %}
+											</td>
+											<td>
+												{% for but in matche.buts %}
+													{% if but.joueur.id == joueursEquipe2[i].id %}
+														{{ but.minute }}'
+														{% if but.type == "tab" %}({{ but.type }})
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</td>
+										{% else %}
+											<td colspan="7"></td>
+										{% endif %}
+									{% endfor %}
+								</tr>
+
+								{% for joueur in matche.feuilleMatch.remplacantsEquipe2 %}
+									<tr class="ligneRemplacants">
+										{% if loop.index == 1 %}
+											<th rowspan="{{loop.length}}" class="text-vertical">Remplaçants</th>
+										{% endif %}
+										<td>{{ joueurs[joueur].numero }}</td>
+										<td>{{ joueurs[joueur].nom }}</td>
+										<td>
+											{% for carton in matche.cartons %}
+												{% if carton.joueur.id == joueurs[joueur].id and carton.couleur == 'jaune' %}
+													X
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td>
+											{% for carton in matche.cartons %}
+												{% if carton.joueur.id == joueurs[joueur].id and carton.couleur == 'rouge' %}
+													X
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td></td>
+										<td>
+											{% for but in matche.buts %}
+												{% if but.joueur.id == joueurs[joueur].id %}
+													{{ but.minute }}'
+													{% if but.type == "tab" %}({{ but.type }})
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="3">Nom du capitaine ou dirigeant :</td>
+									<td colspan="4" class="text-center">Signatures</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										{% for dirigeant in matche.feuilleMatch.dirigeantsEquipe2 %}
+											-
+											{{ dirigeant }}<br>
+										{% endfor %}
+									</td>
+									<td colspan="2">avant match :
+										<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="avantequipe2" {% if matche.feuilleMatch.signatureavantEquipe2 %} disabled {% endif %}>
+											{% if matche.feuilleMatch.signatureavantEquipe2 %}
+												signé ✅
+											{% else %}
+												✍️ Je signe
+											{% endif %}
+										</button>
+									</td>
+									<td colspan="2">après match :
+										{% if matche.statut == "terminé" %}
+											<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="apresequipe2" {% if matche.feuilleMatch.signatureapresEquipe2 %} disabled {% endif %}>
+												{% if matche.feuilleMatch.signatureapresEquipe2 %}
+													signé ✅
+												{% else %}
+													✍️ Je signe
+												{% endif %}
+											</button>
+										{% endif %}
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+						<div class="card border-warning">
+							<div class="card-body">
+								<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">
+									Réserves Équipe 2
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{# Les modals des évènements #}
+		<!-- Modal Bootstrap Ajout but -->
+		<div class="modal fade" id="modalAjouterBut" tabindex="-1" aria-labelledby="modalAjouterButLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Ajouter un But</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterBut" action="{{ path('ajouter_but', {'id': matche.id}) }}" method="POST">
+							<div
+								id="butFormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-success mt-3">Ajouter</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Bootstrap Ajout carton -->
+		<div class="modal fade" id="modalAjouterCarton" tabindex="-1" aria-labelledby="modalAjouterCartonLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Ajouter un Carton</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterCarton" action="{{ path('ajouter_carton', {'id': matche.id}) }}" method="POST">
+							<div
+								id="cartonFormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-warning mt-3">Ajouter</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Bootstrap Ajout remplaçant -->
+		<div class="modal fade" id="modalAjouterRemplacement" tabindex="-1" aria-labelledby="modalAjouterRemplacementLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Ajouter un Remplacement</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterRemplacement" action="{{ path('ajouter_remplacement', {'id': matche.id}) }}" method="POST">
+							<div
+								id="remplacementFormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-success mt-3">Ajouter</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Réserves Équipe 1 -->
+		<div class="modal fade" id="modalAjouterReserveEquipe1" tabindex="-1" aria-labelledby="modalReserveEquipe1Label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Réserves de l'équipe 1</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterReserveEquipe1" action="{{ path('update_reserve_equipe1', {'id': matche.id}) }}" method="POST">
+							<div
+								id="reserveEquipe1FormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let butModal = document.getElementById('modalAjouterBut');
+butModal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('ajouter_but', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("butFormContainer").innerHTML = html;
+});
+});
+
+document.getElementById("formAjouterBut").addEventListener("submit", function (event) {
+event.preventDefault();
+
+let formData = new FormData(this);
+
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("But ajouté avec succès !");
+location.reload();
+} else {
+alert("Erreur lors de l'ajout du but.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let cartonModal = document.getElementById('modalAjouterCarton');
+cartonModal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('ajouter_carton', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("cartonFormContainer").innerHTML = html;
+});
+});
+
+document.getElementById("formAjouterCarton").addEventListener("submit", function (event) {
+event.preventDefault();
+
+let formData = new FormData(this);
+
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("Carton ajouté avec succès !");
+location.reload();
+} else {
+alert("Erreur lors de l'ajout du carton.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let remplacementModal = document.getElementById('modalAjouterRemplacement');
+remplacementModal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('ajouter_remplacement', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("remplacementFormContainer").innerHTML = html;
+});
+});
+
+document.getElementById("formAjouterRemplacement").addEventListener("submit", function (event) {
+event.preventDefault();
+
+let formData = new FormData(this);
+
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("Remplacement effectué avec succès !");
+location.reload();
+} else {
+alert("Erreur lors du remplacement.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll("button[data-type]").forEach(button => {
+button.addEventListener("click", function () {
+let type = this.getAttribute("data-type");
+let button = this;
+
+fetch("{{ path('signer_feuille_match', {'id': matche.id}) }}", {
+method: "POST",
+headers: {
+"Content-Type": "application/x-www-form-urlencoded",
+"X-Requested-With": "XMLHttpRequest"
+},
+body: "type=" + type
+}).then(response => response.json()).then(data => {
+if (data.success) {
+button.innerHTML = "✅ Signature validée";
+button.disabled = true;
+} else {
+alert("Erreur : " + data.message);
+}
+}).catch(error => console.error("Erreur :", error));
+});
+});
+});
+		</script>
+
+<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let reserveEquipe1Modal = document.getElementById('modalAjouterReserveEquipe1');
+reserveEquipe1Modal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('update_reserve_equipe1', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("reserveEquipe1FormContainer").innerHTML = html;
+});
+});
+
+document.getElementById("reserveEquipe1FormContainer").addEventListener("submit", function (event) {
+event.preventDefault();
+
+let formData = new FormData(this);
+
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("Réserve effectuée avec succès !");
+location.reload();
+} else {
+alert("Erreur lors de la reserve.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+
+
+
+	</body>
+</html>

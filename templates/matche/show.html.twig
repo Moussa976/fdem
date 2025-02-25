@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Matche{% endblock %}
+
+{% block body %}
+    <h1>Matche</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ matche.id }}</td>
+            </tr>
+            <tr>
+                <th>Ladate</th>
+                <td>{{ matche.ladate ? matche.ladate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ matche.type }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ matche.statut }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+<h3>Buts</h3>
+<ul>
+    {% for but in matche.buts %}
+        <li>{{ but.minute }}' - {{ but.joueur.nom }} ({{ but.type }})</li>
+    {% endfor %}
+</ul>
+
+<h3>Cartons</h3>
+<ul>
+    {% for carton in matche.cartons %}
+        <li>{{ carton.minute }}' - {{ carton.joueur.nom }} - {{ carton.couleur|capitalize }}</li>
+    {% endfor %}
+</ul>
+
+    <a href="{{ path('ajouter_but', {'id': matche.id}) }}">Ajouter But</a>
+<a href="{{ path('ajouter_carton', {'id': matche.id}) }}">Ajouter Carton</a>
+<a href="{{ path('ajouter_remplacement', {'id': matche.id}) }}">Ajouter Remplacement</a>
+
+    <a href="{{ path('app_matche_index') }}">back to list</a>
+
+    <a href="{{ path('app_matche_edit', {'id': matche.id}) }}">edit</a>
+    <a href="{{ path('app_matche_terminer', {'id': matche.id}) }}" class="btn btn-danger">Terminer le match</a>
+    <a href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" class="btn btn-primary">Télécharger Feuille PDF</a>
+
+
+    {{ include('matche/_delete_form.html.twig') }}
+{% endblock %}

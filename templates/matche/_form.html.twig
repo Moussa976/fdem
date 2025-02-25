@@ -1,0 +1,62 @@
+{{ form_start(form) }}
+
+
+<div class="row g-2 mt-3">
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.type) }}
+			{{ form_label(form.type) }}
+		</div>
+	</div>
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.ladate) }}
+			{{ form_label(form.ladate) }}
+		</div>
+	</div>
+</div>
+
+<div class="row g-2 mt-3">
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.equipe1) }}
+			{{ form_label(form.equipe1) }}
+		</div>
+	</div>
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.equipe2) }}
+			{{ form_label(form.equipe2) }}
+		</div>
+	</div>
+</div>
+
+<div class="row g-2 mt-3">
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.arbitreCentral) }}
+			{{ form_label(form.arbitreCentral) }}
+		</div>
+	</div>
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.arbitreAssistant1) }}
+			{{ form_label(form.arbitreAssistant1) }}
+		</div>
+	</div>
+	<div class="col-md">
+		<div class="form-floating">
+			{{ form_widget(form.arbitreAssistant2) }}
+			{{ form_label(form.arbitreAssistant2) }}
+		</div>
+	</div>
+</div>
+
+<div class="row justify-content-center align-items-center g-2 mt-3">
+	<div class="col text-center">
+		<button class="btn btn-primary">{{ button_label|default('Créer') }}</button>
+	</div>
+</div>
+
+
+{{ form_end(form) }}

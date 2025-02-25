@@ -1,0 +1,27 @@
+{{ form_start(form) }}
+<div class="row">
+	<div class="col-12 col-md-4">
+		<div class="form-floating mb-3">
+			{{ form_widget(form.nom) }}
+			{{ form_label(form.nom) }}
+		</div>
+	</div>
+	<div class="col-12 col-md-4">
+		<div class="form-floating mb-3">
+			{{ form_widget(form.numero) }}
+			{{ form_label(form.numero) }}
+		</div>
+	</div>
+	<div class="col-12 col-md-4">
+		<div class="form-floating mb-3">
+			{{ form_widget(form.equipe) }}
+			{{ form_label(form.equipe) }}
+		</div>
+	</div>
+</div>
+<div class="row my-1">
+	<div class="col text-center">
+		<button class=" text-center btn btn-sm btn-success">{{ button_label|default('Enregistrer') }}</button>
+	</div>
+</div>
+{{ form_end(form) }}

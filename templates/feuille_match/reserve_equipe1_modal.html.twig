@@ -1,0 +1,11 @@
+{{ form_start(formReserveEquipe1, {'attr': {'id': 'formAjouterReserveEquipe1'}}) }}
+<div class="mb-3 row">
+	{{ form_label(formReserveEquipe1.reserveEquipe1) }}
+	<div class="col-12">
+		{{ form_widget(formReserveEquipe1.reserveEquipe1, {'attr': {'class': 'form-control'}}) }}
+	</div>
+</div>
+<div class="text-center">
+	<button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+</div>
+{{ form_end(formReserveEquipe1) }}

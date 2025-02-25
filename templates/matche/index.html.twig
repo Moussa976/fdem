@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Gestion des Matchs et Joueurs
+{% endblock %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+{% block body %}
+	<div class="container mt-5 pt-4">
+		<h1 class="mb-4">Tableau de bord</h1>
+		<div class="row g-2">
+			<div class="col-12 col-lg-7">
+				<div class="card mb-4" id="lesmatchs">
+					<div class="card-header bg-primary text-white">Les matchs</div>
+					<div class="card-body table-responsive overflow" style="height:500px;">
+						{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+							<div class="my-2 text-center">
+								<a name="" id="" class="btn btn-success" href="{{path('app_matche_new')}}" role="button">
+									<i class="fas fa-plus-circle"></i>
+									Créer un match</a>
+							</div>
+						{% endif %}
+
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+										<th>#</th>
+									{% endif %}
+									<th>Équipe recevante</th>
+									<th>Score</th>
+									<th>Équipe visiteuse</th>
+									<th>Date</th>
+									<th>Type de match</th>
+									{% if app.user %}
+										<th>Actions</th>
+									{% endif %}
+								</tr>
+							</thead>
+							<tbody>
+								{% for matche in matches %}
+									<tr>
+										{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+											<td>{{ matche.id }}</td>
+										{% endif %}
+										<td>{{ matche.equipe1.nom }}</td>
+										<td>
+											{% if matche.statut == 'terminé' %}
+												{{ matche.getScoreEquipe1 }}
+												-
+												{{ matche.getScoreEquipe2 }}
+											{% elseif matche.ladate <= date() %}
+												<span class="badge bg-warning">En cours</span>
+											{% else %}
+												<span class="badge bg-info">À venir</span>
+											{% endif %}
+										</td>
+										<td>{{ matche.equipe2.nom }}</td>
+										<td>
+											<div class="dropdown">
+												<button class="btn dropdown-toggle" type="button" id="dateMatch{{loop.index}}" data-bs-toggle="dropdown" aria-expanded="false">
+													<i class='fas fa-calendar'></i>
+												</button>
+												<ul class="dropdown-menu" aria-labelledby="dateMatch{{loop.index}}">
+													<li>{{ matche.ladate ? matche.ladate|date('d-m-Y à H:i') : '' }}</li>
+												</ul>
+											</div>
+
+
+										</td>
+										<td>{{ matche.type }}</td>
+										{% if app.user %}
+											<td>
+												<div class="dropdown">
+													<button class="btn dropdown-toggle" type="button" id="actionMatch{{loop.index}}" data-bs-toggle="dropdown" aria-expanded="false">
+														<i class='fas fa-gear'></i>
+													</button>
+													<ul class="dropdown-menu text-center" aria-labelledby="actionMatch{{loop.index}}">
+														<li>
+															<a href="{{ path('app_matche_apercufeuille_pdf', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
+																<i class='fas fa-eye'></i>
+																Voir
+															</a>
+														</li>
+														<li>
+															{% if 'ROLE_ADMIN' in app.user.roles %}
+																<a href="{{ path('app_matche_edit', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
+																	<i class='fas fa-pencil'></i>
+																	Modifier
+																</a>
+															{% endif %}
+														</li>
+														<li>
+															<a href="{{ path('feuille_match_remplir', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
+																<i class='fas fa-pencil'></i>
+																Remplir la feuille
+															</a>
+														</li>
+													</ul>
+												</div>
+											</td>
+										{% endif %}
+									</tr>
+								{% else %}
+									<tr class="text-center">
+										<td colspan="7">Aucun match créé !
+											{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+												<a name="" id="" class="btn btn-success" href="{{path('app_matche_new')}}" role="button">
+													<i class="fas fa-plus-circle"></i>
+													Créer un match</a>
+											{% endif %}
+										</td>
+									</tr>
+								{% endfor %}
+								<!-- Ajoutez plus de joueurs ici -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-lg-5">
+				<div class="card mb-4" id="lesjoueurs">
+					<div class="card-header bg-primary text-white">Statistiques joueurs</div>
+					<div class="card-body">
+						<input type="text" id="search" class="form-control" placeholder="Nom de l'équipe ou joueur" value="">
+						<div class="table-responsive overflow" style="height:500px;">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Nom</th>
+										<th>Équipe</th>
+										<th>
+											<i class='fas fa-soccer-ball'></i>
+										</th>
+										<th>
+											<i class='fas fa-square' style='color:yellow'></i>
+										</th>
+										<th>
+											<i class='fas fa-square' style='color:red'></i>
+										</th>
+										{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+											<th>Actions</th>
+										{% endif %}
+									</tr>
+								</thead>
+								<tbody>
+									{% for joueur in joueurs %}
+										<tr class="tag_p" data-search-term="{{ joueur[0].nom|upper }}" data-tag="{{ joueur[0].equipe.nom|upper }}, {{ joueur[0].nom|upper }}">
+											<td>{{ loop.index }}</td>
+											<td>{{ joueur[0].nom|upper }}</td>
+											<td><img src="{{ asset('images/'~ joueur[0].equipe.logo) }}" alt="{{ joueur[0].equipe.nom|upper }}" title="{{ joueur[0].equipe.nom|upper }}" style="height:20px; max-width:20px;"></td>
+											<td>{{ joueur.nbButs }}</td>
+											<td>{{ joueur.nbCartonsJaunes }}</td>
+											<td>{{ joueur.nbCartonsRouges }}</td>
+											{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+												<td>
+													<a class="btn btn-info btn-sm" href="{{ path('app_joueur_show', {'id': joueur[0].id}) }}">
+														<i class='fas fa-eye'></i>
+													</a>
+												</td>
+											{% endif %}
+										</tr>
+									{% else %}
+										<tr>
+											<td colspan="7">Aucun résultat trouvé</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block javascripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<script>
+		// Récupérer le champ de saisie
+const champTexte = document.getElementById('search');
+
+// Écouteur d'événement sur la saisie
+champTexte.addEventListener('input', function () { // Transformer le texte en MAJUSCULES
+this.value = this.value.toUpperCase();
+});
+
+$('#search').on('input', function () {
+var searchTerm = $.trim(this.value);
+$('.tag_p').each(function () {
+if (searchTerm.length < 1) {
+$(this).show();
+} else {
+$(this).toggle($(this).filter('[data-search-term*="' + searchTerm + '"], [data-tag*="' + searchTerm + '"]').length > 0);
+}
+});
+})
+	</script>
+{% endblock %}

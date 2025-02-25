@@ -1,0 +1,20 @@
+{{ form_start(formCarton, {'attr': {'id': 'formAjouterCarton'}}) }}
+<div class="mb-3 row">
+	{{ form_label(formCarton.joueur) }}
+	<div class="col-12">
+		{{ form_widget(formCarton.joueur) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(formCarton.minute) }}
+	<div class="col-12">
+		{{ form_widget(formCarton.minute) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(formCarton.couleur) }}
+	<div class="col-12">
+		{{ form_widget(formCarton.couleur) }}
+	</div>
+</div>
+{{ form_end(formCarton) }}

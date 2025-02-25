@@ -1,0 +1,20 @@
+{{ form_start(form, {'attr': {'id': 'formAjouterBut'}}) }}
+<div class="mb-3 row">
+	{{ form_label(form.joueur) }}
+	<div class="col-12">
+		{{ form_widget(form.joueur) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(form.minute) }}
+	<div class="col-12">
+		{{ form_widget(form.minute) }}
+	</div>
+</div>
+<div class="mb-3 row">
+	{{ form_label(form.type) }}
+	<div class="col-12">
+		{{ form_widget(form.type) }}
+	</div>
+</div>
+{{ form_end(form) }}

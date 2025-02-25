@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Remplir Feuille de Match
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5 pt-4">
+		<div class="my-3">
+			<a href="{{ path('app_matche_index') }}" class="btn btn-secondary mt-3">Retour</a>
+		</div>
+		{{ form_start(form) }}
+		<div class="card border-primary mb-5">
+			<div class="card-header text-center">
+				<h3 class="mb-4">Remplir la feuille de match :
+					{{ matche.equipe1.nom }}
+					vs
+					{{ matche.equipe2.nom }}</h3>
+			</div>
+			<div class="card-body text-primary">
+
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="text-center my-3">
+							<button type="button" class="btn btn-outline-secondary btn-lg" data-bs-toggle="collapse" data-bs-target="#equipeRecevante" aria-expanded="false" aria-controls="equipeRecevante">
+								Équipe 1 :
+								{{ matche.equipe1.nom }}
+							</button>
+						</div>
+						<div class="collapse" id="equipeRecevante">
+							<div class="form-floating">
+								{{ form_widget(form.dirigeantsEquipe1, {'attr': {'value': dirigeantsEquipe1 is not empty ? dirigeantsEquipe1|join(', ') : ' '}}) }}
+								{{ form_label(form.dirigeantsEquipe1) }}
+							</div>
+							<div class="table-responsive">
+								<table class="table table-bordered text-center">
+									<thead>
+										<tr>
+											<th>Nom joueur</th>
+											<th>Titulaire</th>
+											<th>Remplaçant</th>
+											<th>Numéro</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for joueur in joueursEquipe1 %}
+											<tr>
+												<td>{{ joueur.nom }}</td>
+												<td>{{ form_widget(attribute(form, 'titulaire_' ~ joueur.id), {'attr': joueur.id in titulairesEquipe1 ? {'checked': 'checked'} : {}}) }}</td>
+												<td>{{ form_widget(attribute(form, 'remplacant_' ~ joueur.id), {'attr': joueur.id in remplacantsEquipe1 ? {'checked': 'checked'} : {}}) }}</td>
+												<td>{{ form_widget(attribute(form, 'numeroMaillot_' ~ joueur.id), {'attr': {'value': numerosMaillot[joueur.id]|default('')}}) }}</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="text-center my-3">
+							<button type="button" class="btn btn-outline-secondary btn-lg" data-bs-toggle="collapse" data-bs-target="#equipeVisiteuse" aria-expanded="false" aria-controls="equipeVisiteuse">
+								Équipe 2 :
+								{{ matche.equipe2.nom }}
+							</button>
+						</div>
+						<div class="collapse" id="equipeVisiteuse">
+							<div class="form-floating">
+								{{ form_widget(form.dirigeantsEquipe2, {'attr': {'value': dirigeantsEquipe2 is not empty ? dirigeantsEquipe2|join(', ') : ' '}}) }}
+								{{ form_label(form.dirigeantsEquipe2) }}
+							</div>
+							<div class="table-responsive">
+								<table class="table table-bordered text-center">
+									<thead>
+										<tr>
+											<th>Nom joueur</th>
+											<th>Titulaire</th>
+											<th>Remplaçant</th>
+											<th>Numéro</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for joueur in joueursEquipe2 %}
+											<tr>
+												<td>{{ joueur.nom }}</td>
+												<td>{{ form_widget(attribute(form, 'titulaire_' ~ joueur.id), {'attr': joueur.id in titulairesEquipe2 ? {'checked': 'checked'} : {}}) }}</td>
+												<td>{{ form_widget(attribute(form, 'remplacant_' ~ joueur.id), {'attr': joueur.id in remplacantsEquipe2 ? {'checked': 'checked'} : {}}) }}</td>
+												<td>{{ form_widget(attribute(form, 'numeroMaillot_' ~ joueur.id), {'attr': {'value': numerosMaillot[joueur.id]|default('')}}) }}</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer text-body-secondary text-center">
+				<small>
+					<i class="fas fa-hand-point-up"></i>
+					Veuillez appuyer sur le nom de votre équipe pour remplir la feuille !</small><br>
+				<button class="btn btn-success mt-3">Valider</button>
+			</div>
+		</div>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}
