@@ -14,7 +14,7 @@ class ReserveEquipe1Type extends AbstractType
     {
         $builder
             ->add('reserveEquipe1', TextareaType::class, [
-                'label' => 'Réserves de l\'équipe 1 :',
+                'label' => 'Réserve de l\'équipe 1 :',
                 'required' => false,
                 'attr' => ['class' => 'form-control', 'rows' => 3]
             ]);

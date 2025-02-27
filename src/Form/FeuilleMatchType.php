@@ -28,23 +28,47 @@ class FeuilleMatchType extends AbstractType
         $joueursEquipe1 = $this->joueurRepository->findBy(['equipe' => $matche->getEquipe1()]);
         $joueursEquipe2 = $this->joueurRepository->findBy(['equipe' => $matche->getEquipe2()]);
 
-        foreach (array_merge($joueursEquipe1, $joueursEquipe2) as $joueur) {
+        foreach ($joueursEquipe1 as $joueur) {
             $builder
                 ->add('titulaire_' . $joueur->getId(), CheckboxType::class, [
                     'label' => false,
                     'required' => false,
                     'mapped' => false,
+                    'attr' => ['class' => 'titulairesEquipe1'],
                 ])
                 ->add('remplacant_' . $joueur->getId(), CheckboxType::class, [
                     'label' => false,
                     'required' => false,
                     'mapped' => false,
+                    'attr' => ['class' => 'remplacantsEquipe1'],
                 ])
                 ->add('numeroMaillot_' . $joueur->getId(), IntegerType::class, [
                     'label' => false,
                     'required' => false,
                     'mapped' => false,
-                    'attr' => ['class' => 'form-control', 'style' => 'width: 60px;'],
+                    'attr' => ['class' => 'form-control numeros', 'style' => 'width: 60px;'],
+                ]);
+        }
+
+        foreach ($joueursEquipe2 as $joueur) {
+            $builder
+                ->add('titulaire_' . $joueur->getId(), CheckboxType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => ['class' => ' titulairesEquipe2'],
+                ])
+                ->add('remplacant_' . $joueur->getId(), CheckboxType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => ['class' => 'remplacantsEquipe2'],
+                ])
+                ->add('numeroMaillot_' . $joueur->getId(), IntegerType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => ['class' => 'form-control numeros', 'style' => 'width: 60px;'],
                 ]);
         }
 

@@ -3,9 +3,18 @@
 {% block title %}New Joueur{% endblock %}
 
 {% block body %}
-    <h1>Create new Joueur</h1>
+	<div class="container mt-5 pt-4">
+		<h1 class="mb-4 text-center">Ajouter un joueur</h1>
+		<div class="row g-2">
 
-    {{ include('joueur/_form.html.twig') }}
-
-    <a href="{{ path('app_joueur_index') }}">back to list</a>
+			<div class="col-12 my-4">
+				<a class="btn btn-sm btn-secondary" href="{{ path('app_joueur_index') }}">Retour à la liste des joueurs</a>
+			</div>
+		</div>
+		<div class="card mt-5">
+			<div class="card-body">
+				{{ include('joueur/_form.html.twig', {'button_label': 'Modifier'}) }}
+			</div>
+		</div>
+	</div>
 {% endblock %}

@@ -10,26 +10,40 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto">
 				{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-					<li class="nav-item">
-						<a class="nav-link" href="{{path ('app_matche_new')}}">
+					<li class="nav-item mx-2 my-1">
+						<a class="btn btn-sm btn-secondary" href="{{path ('app_matche_new')}}">
 							<i class="fas fa-plus-circle"></i>
 							Créer Match</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="{{path ('app_joueur_index')}}">
+					<li class="nav-item mx-2 my-1">
+						<a class="btn btn-sm btn-success" href="{{path ('app_joueur_index')}}">
 							<i class="fas fa-users"></i>
 							Joueurs</a>
 					</li>
 				{% endif %}
-				<li class="nav-item">
+				<li class="nav-item mx-2 my-1">
 					{% if app.user %}
-						<a class="nav-link" href="{{ path('app_logout') }}">
-							<i class="fas fa-right-from-bracket"></i>
-							Se déconnecter</a>
+						<div class="btn-group">
+							<button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="fas fa-user"></i> 
+								{% if is_granted('ROLE_EQUIPE') %}
+									{{ app.user.equipe.nom}}
+								{% else %}
+									Admin
+								{% endif %}
+							</button>
+							<ul class="dropdown-menu">
+								<li>
+									<a class="dropdown-item" href="{{ path('app_logout') }}">
+										<i class="fas fa-right-from-bracket"></i>
+										Se déconnecter</a>
+								</li>
+							</ul>
+						</div>
 					{% else %}
-						<a class="nav-link" href="{{ path('app_login') }}">
+						<a class="btn btn-sm btn-warning" href="{{ path('app_login') }}">
 							<i class="fas fa-sign-in-alt"></i>
-							Connexion</a>
+							Se connecter</a>
 					{% endif %}
 
 				</li>

@@ -39,6 +39,17 @@ class MatcheRepository extends ServiceEntityRepository
         }
     }
 
+    public function findMatchsByEquipe($equipeId)
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.equipe1 = :equipeId')
+            ->orWhere('m.equipe2 = :equipeId')
+            ->setParameter('equipeId', $equipeId)
+            ->orderBy('m.ladate', 'DESC') // Trier par date, du plus récent au plus ancien
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Matche[] Returns an array of Matche objects
 //     */

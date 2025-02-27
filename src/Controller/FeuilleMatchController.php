@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FeuilleMatchController extends AbstractController
 {
     /**
-     * @Route("/feuille-match/{id}/remplir", name="feuille_match_remplir")
+     * @Route("/feuille-match/remplir/{id}", name="feuille_match_remplir")
      */
     public function remplirFeuille(Matche $matche, Request $request, JoueurRepository $joueurRepository, EntityManagerInterface $em): Response
     {
@@ -138,7 +138,7 @@ class FeuilleMatchController extends AbstractController
 
 
     /**
-     * @Route("/match/{id}/signer", name="signer_feuille_match", methods={"POST"})
+     * @Route("/match/signer/{id}", name="signer_feuille_match", methods={"POST"})
      */
     public function signerFeuilleMatch(Matche $matche, Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -197,8 +197,9 @@ class FeuilleMatchController extends AbstractController
     /**
      * @Route("/match/{id}/reserve-equipe2", name="update_reserve_equipe2", methods={"GET", "POST"})
      */
-    public function updateReserveEquipe2(FeuilleMatch $feuilleMatch, Request $request, EntityManagerInterface $em): Response
+    public function updateReserveEquipe2(Matche $matche, Request $request, EntityManagerInterface $em): Response
     {
+        $feuilleMatch = $matche->getFeuilleMatch();
         $form = $this->createForm(ReserveEquipe2Type::class, $feuilleMatch);
         $form->handleRequest($request);
 
@@ -216,8 +217,9 @@ class FeuilleMatchController extends AbstractController
     /**
      * @Route("/match/{id}/observation-arbitre", name="update_observation_arbitre", methods={"GET", "POST"})
      */
-    public function updateObservationArbitre(FeuilleMatch $feuilleMatch, Request $request, EntityManagerInterface $em): Response
+    public function updateObservationArbitre(Matche $matche, Request $request, EntityManagerInterface $em): Response
     {
+        $feuilleMatch = $matche->getFeuilleMatch();
         $form = $this->createForm(ObservationArbitreType::class, $feuilleMatch);
         $form->handleRequest($request);
 
@@ -228,7 +230,7 @@ class FeuilleMatchController extends AbstractController
         }
 
         return $this->render('feuille_match/observation_arbitre_modal.html.twig', [
-            'form' => $form->createView(),
+            'formObservationArbitre' => $form->createView(),
         ]);
     }
 

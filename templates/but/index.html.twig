@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les buts - Gestion de feuille de matchs
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5 pt-4">
+		<h1 class="mb-4 text-center">Les buts marqués</h1>
+		<div class="row g-2">
+			<div class="col-12 col-lg-8">
+				<div class="card mb-4">
+					<div class="card-header bg-primary text-white">Les matchs</div>
+					<div class="card-body table-responsive overflow" style="height:500px;">
+
+
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th colspan="2">Match</th>
+									<th>Joueur</th>
+									<th>Minute</th>
+									<th>Type</th>
+									<th>action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for but in buts %}
+									<tr>
+										<td><img src="{{ asset('images/'~ but.matche.equipe1.logo) }}" alt="{{ but.matche.equipe1.nom}}" title="{{ but.matche.equipe1.nom}}" style="height:20px; max-width:20px;">{{ but.matche.equipe1.nom }}</td>
+										<td><img src="{{ asset('images/'~ but.matche.equipe2.logo) }}" alt="{{ but.matche.equipe2.nom}}" title="{{ but.matche.equipe2.nom}}" style="height:20px; max-width:20px;">{{ but.matche.equipe2.nom }}
+										</td>
+										<td><img src="{{ asset('images/'~ but.joueur.equipe.logo) }}" alt="{{ but.joueur.equipe.nom}}" title="{{ but.joueur.equipe.nom}}" style="height:20px; max-width:20px;">
+											{{ but.joueur.nom}}
+											(N°{{ but.joueur.numero}})</td>
+										<td>{{ but.minute }}'</td>
+										<td>{{ but.type }}</td>
+										<td>
+											{{ include('but/_delete_form.html.twig') }}
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="4">no records found</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

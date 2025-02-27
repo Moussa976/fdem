@@ -8,6 +8,10 @@
 			VS
 			{{ matche.equipe2.nom }}</title>
 		<style>
+			html{
+				margin: 2mm 5mm 5mm 5mm; 
+			}
+			
 			body {
 				font-family: Arial, sans-serif;
 				font-size: 12px;
@@ -44,6 +48,10 @@
 			.mt-20px {
 				margin-top: 20px;
 				padding: 5px;
+			}
+
+			.mt-5mm {
+				margin-top:2mm;
 			}
 
 			.p-5 {
@@ -276,6 +284,13 @@
 								<td colspan="2">après match : {% if matche.statut == "terminé" %} {% if matche.feuilleMatch.signatureapresEquipe1 %}a signé ✔{% else %} n'a pas signé &#x2715;{% endif %} {% endif %}</td>
 							</tr>
 						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="7">
+									<p>Réserve de l'équipe :<br>{{ matche.feuilleMatch.reserveEquipe1 }}</p>
+								</td>
+							</tr>
+						</tfoot>
 					</table>
 				</td>
 				<td class="tabEquipe w-50 p-5 border-none">
@@ -384,9 +399,25 @@
 								<td colspan="2">après match : {% if matche.statut == "terminé" %} {% if matche.feuilleMatch.signatureapresEquipe2 %}a signé ✔{% else %} n'a pas signé &#x2715;{% endif %} {% endif %}</td>
 							</tr>
 						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="7">
+									<p>Réserve de l'équipe :<br>{{ matche.feuilleMatch.reserveEquipe2 }}</p>
+								</td>
+							</tr>
+						</tfoot>
 					</table>
 				</td>
 			</tr>
+		</table>
+		<table class="mt-5mm">
+			<tbody>
+				<tr>
+					<td>
+						<p>Oberservations de l'arbitre :<br>{{ matche.feuilleMatch.observationArbitre }}</p>
+					</td>
+				</tr>
+			</tbody>
 		</table>
 	</body>
 </html>

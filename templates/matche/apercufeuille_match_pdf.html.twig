@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" href="{{ asset('images/logo.ico')}}">
 		<title>Feuille de match :
 			{{ matche.equipe1.nom }}
 			VS
@@ -98,24 +99,30 @@
 				<div class="col-4">
 					{% if app.user %}
 						<div class="dropdown">
-							{% if 'ROLE_ADMIN' in app.user.roles %}
-								<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Actions
-								</button>
+							<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Actions
+							</button>
+							{% if is_granted('ROLE_ADMIN') %}
 								<ul class="dropdown-menu">
 									<li>
-										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterBut">Ajouter un but
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterBut">
 											<i class='fas fa-soccer-ball'></i>
+											Ajouter un but
+
 										</a>
 									</li>
 									<li>
-										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterCarton">Ajouter un carton
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterCarton">
 											<i class='fas fa-square'></i>
+											Ajouter un carton
+
 										</a>
 									</li>
 									<li>
-										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterRemplacement">Ajouter un remplacement
+										<a class="btn btn-secondary dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalAjouterRemplacement">
 											<i class='fas fa-rotate'></i>
+											Ajouter un remplacement
+
 										</a>
 									</li>
 									<li>
@@ -128,22 +135,26 @@
 										</button>
 									</li>
 									<li>
-										<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_terminer', {'id': matche.id}) }}" class="btn btn-danger">Terminer le match</a>
-									</li>
-									<li>
-										<a type="button" class="btn btn-warning dropdown-item" data-bs-toggle="modal" data-bs-target="#modalObservationArbitre">
-											Observations Arbitre
+										<a type="button" class="btn btn-warning dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAjouterObservationArbitre">
+											✍️ Observations de l'arbitre
 										</a>
 									</li>
 									<li>
-										<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" class="btn btn-primary">Télécharger Feuille PDF</a>
+										<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" target="_blank" class="btn btn-primary">
+											<i class="fas fa-file-pdf"></i>
+											Télécharger la feuille</a>
+									</li>
+									<li>
+										<a class="btn btn-secondary dropdown-item bg-danger" href="{{ path('app_matche_terminer', {'id': matche.id}) }}" onclick="return confirmAction(event)" class="btn btn-danger">Terminer le match</a>
 									</li>
 								</ul>
 							{% else %}
-								{% if matche.statut == "termine" %}
+								{% if matche.statut == "terminé" %}
 									<ul class="dropdown-menu">
 										<li>
-											<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" class="btn btn-primary">Télécharger Feuille PDF</a>
+											<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" target="_blank" class="btn btn-primary">
+												<i class="fas fa-file-pdf"></i>
+												Télécharger la feuille</a>
 										</li>
 									</ul>
 								{% endif %}
@@ -212,7 +223,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="container mt-3">
+			<div class="container my-3">
 				<div class="row">
 					{% set maxLignes = 11 %}
 					{% set joueursEquipe1 = [] %}
@@ -223,12 +234,14 @@
 					{% for joueurId in matche.feuilleMatch.titulairesEquipe2 %}
 						{% set joueursEquipe2 = joueursEquipe2|merge([joueurs[joueurId]]) %}
 					{% endfor %}
-					<div class="col-12 col-md-6 table-responsive">
+					<div class="col-12 col-md-6 table-responsive mb-2">
 						<table class="table table-striped">
 							<thead>
 								<tr>
 									<th colspan="7">Nom de l’équipe recevante :
-										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeRecevante" aria-expanded="false" aria-controls="equipeRecevante">{{ matche.equipe1.nom }}</button>
+										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeRecevante" aria-expanded="false" aria-controls="equipeRecevante">{{ matche.equipe1.nom }}
+											<small style="font-size: 8px;">(Voir les joueurs)</small>
+										</button>
 									</th>
 								</tr>
 								<tr>
@@ -335,6 +348,7 @@
 										{% endfor %}
 									</td>
 									<td colspan="2">avant match :
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}
 										<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="avantequipe1" {% if matche.feuilleMatch.signatureavantEquipe1 %} disabled {% endif %}>
 											{% if matche.feuilleMatch.signatureavantEquipe1 %}
 												signé ✅
@@ -342,16 +356,19 @@
 												✍️ Je signe
 											{% endif %}
 										</button>
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
 									</td>
 									<td colspan="2">après match :
-										{% if matche.statut == "terminé" %}
-											<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="apresequipe1" {% if matche.feuilleMatch.signatureapresEquipe1 %} disabled {% endif %}>
+										{% if matche.feuilleMatch.signatureavantEquipe1 %}
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}	
+										<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="apresequipe1" {% if matche.feuilleMatch.signatureapresEquipe1 %} disabled {% endif %}>
 												{% if matche.feuilleMatch.signatureapresEquipe1 %}
 													signé ✅
 												{% else %}
 													✍️ Je signe
 												{% endif %}
 											</button>
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
 										{% endif %}
 									</td>
 								</tr>
@@ -360,18 +377,29 @@
 
 						<div class="card border-warning">
 							<div class="card-body">
-								<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">
-									Réserves Équipe 1
-								</button>
+								<p class="card-text">
+									Réserve de l'équipe recevante :<br>
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}
+								{% if matche.feuilleMatch.reserveEquipe1 %}
+									{{ matche.feuilleMatch.reserveEquipe1 }}
+									
+									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Modifier</button>{% endif %}
+								{% else %}
+									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Écrire une réserve</button>{% endif %}
+								{% endif %}
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
+							</p>
 							</div>
 						</div>
 					</div>
-					<div class="col-12 col-md-6 table-responsive">
+					<div class="col-12 col-md-6 table-responsive mb-2">
 						<table class="table table-striped">
 							<thead>
 								<tr>
 									<th colspan="7">Nom de l’équipe visiteur :
-										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeVisiteuse" aria-expanded="false" aria-controls="equipeVisiteuse">{{ matche.equipe2.nom }}</button>
+										<button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#equipeVisiteuse" aria-expanded="false" aria-controls="equipeVisiteuse">{{ matche.equipe2.nom }}
+											<small style="font-size: 8px;">(Voir les joueurs)</small>
+										</button>
 									</th>
 								</tr>
 								<tr>
@@ -477,6 +505,7 @@
 										{% endfor %}
 									</td>
 									<td colspan="2">avant match :
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
 										<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="avantequipe2" {% if matche.feuilleMatch.signatureavantEquipe2 %} disabled {% endif %}>
 											{% if matche.feuilleMatch.signatureavantEquipe2 %}
 												signé ✅
@@ -484,9 +513,11 @@
 												✍️ Je signe
 											{% endif %}
 										</button>
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
 									</td>
 									<td colspan="2">après match :
-										{% if matche.statut == "terminé" %}
+										{% if matche.feuilleMatch.signatureavantEquipe2 %}
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
 											<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="apresequipe2" {% if matche.feuilleMatch.signatureapresEquipe2 %} disabled {% endif %}>
 												{% if matche.feuilleMatch.signatureapresEquipe2 %}
 													signé ✅
@@ -494,6 +525,7 @@
 													✍️ Je signe
 												{% endif %}
 											</button>
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
 										{% endif %}
 									</td>
 								</tr>
@@ -501,9 +533,17 @@
 						</table>
 						<div class="card border-warning">
 							<div class="card-body">
-								<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">
-									Réserves Équipe 2
-								</button>
+								<p class="card-text"> 
+									Réserve de l'équipe visiteuse :<br>
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
+								{% if matche.feuilleMatch.reserveEquipe2 %}
+									{{ matche.feuilleMatch.reserveEquipe2 }}
+									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Modifier</button>{% endif %}
+								{% else %}
+									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Écrire une réserve</button>{% endif %}
+								{% endif %}
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
+									</p>
 							</div>
 						</div>
 					</div>
@@ -597,6 +637,43 @@
 			</div>
 		</div>
 
+		<!-- Modal Réserves Équipe 2 -->
+		<div class="modal fade" id="modalAjouterReserveEquipe2" tabindex="-1" aria-labelledby="modalReserveEquipe2Label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Réserves de l'équipe 2</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterReserveEquipe2" action="{{ path('update_reserve_equipe2', {'id': matche.id}) }}" method="POST">
+							<div
+								id="reserveEquipe2FormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Observations arbitre -->
+		<div class="modal fade" id="modalAjouterObservationArbitre" tabindex="-1" aria-labelledby="modalOberservationArbitreLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Obervations de l'arbitre</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formAjouterOberservationArbitre" action="{{ path('update_observation_arbitre', {'id': matche.id}) }}" method="POST">
+							<div
+								id="observationArbitreFormContainer"><!-- Le formulaire sera chargé ici via AJAX -->
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -609,13 +686,12 @@ fetch("{{ path('ajouter_but', {'id': matche.id}) }}").then(response => response.
 document.getElementById("butFormContainer").innerHTML = html;
 });
 });
-
 document.getElementById("formAjouterBut").addEventListener("submit", function (event) {
 event.preventDefault();
-
 let formData = new FormData(this);
-
-fetch(this.action, {
+let confirmation = confirm("But confirmé par l'arbitre ?");
+if (confirmation) {
+	fetch(this.action, {
 method: this.method,
 body: formData
 }).then(response => response.json()).then(data => {
@@ -626,10 +702,11 @@ location.reload();
 alert("Erreur lors de l'ajout du but.");
 }
 }).catch(error => console.error("Erreur:", error));
+}
+
 });
 });
 		</script>
-
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 let cartonModal = document.getElementById('modalAjouterCarton');
@@ -638,13 +715,12 @@ fetch("{{ path('ajouter_carton', {'id': matche.id}) }}").then(response => respon
 document.getElementById("cartonFormContainer").innerHTML = html;
 });
 });
-
 document.getElementById("formAjouterCarton").addEventListener("submit", function (event) {
 event.preventDefault();
-
 let formData = new FormData(this);
-
-fetch(this.action, {
+let confirmation = confirm("Carton confirmé par l'arbitre ?");
+if (confirmation) {
+	fetch(this.action, {
 method: this.method,
 body: formData
 }).then(response => response.json()).then(data => {
@@ -652,13 +728,13 @@ if (data.success) {
 alert("Carton ajouté avec succès !");
 location.reload();
 } else {
-alert("Erreur lors de l'ajout du carton.");
+alert("Erreur lors de l'ajout du but.");
 }
 }).catch(error => console.error("Erreur:", error));
+}
 });
 });
 		</script>
-
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 let remplacementModal = document.getElementById('modalAjouterRemplacement');
@@ -667,12 +743,9 @@ fetch("{{ path('ajouter_remplacement', {'id': matche.id}) }}").then(response => 
 document.getElementById("remplacementFormContainer").innerHTML = html;
 });
 });
-
 document.getElementById("formAjouterRemplacement").addEventListener("submit", function (event) {
 event.preventDefault();
-
 let formData = new FormData(this);
-
 fetch(this.action, {
 method: this.method,
 body: formData
@@ -687,14 +760,12 @@ alert("Erreur lors du remplacement.");
 });
 });
 		</script>
-
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll("button[data-type]").forEach(button => {
 button.addEventListener("click", function () {
 let type = this.getAttribute("data-type");
 let button = this;
-
 fetch("{{ path('signer_feuille_match', {'id': matche.id}) }}", {
 method: "POST",
 headers: {
@@ -714,8 +785,7 @@ alert("Erreur : " + data.message);
 });
 });
 		</script>
-
-<script>
+		<script>
 			document.addEventListener("DOMContentLoaded", function () {
 let reserveEquipe1Modal = document.getElementById('modalAjouterReserveEquipe1');
 reserveEquipe1Modal.addEventListener('show.bs.modal', function () {
@@ -723,12 +793,9 @@ fetch("{{ path('update_reserve_equipe1', {'id': matche.id}) }}").then(response =
 document.getElementById("reserveEquipe1FormContainer").innerHTML = html;
 });
 });
-
-document.getElementById("reserveEquipe1FormContainer").addEventListener("submit", function (event) {
+document.getElementById("formAjouterReserveEquipe1").addEventListener("submit", function (event) {
 event.preventDefault();
-
 let formData = new FormData(this);
-
 fetch(this.action, {
 method: this.method,
 body: formData
@@ -743,7 +810,65 @@ alert("Erreur lors de la reserve.");
 });
 });
 		</script>
-
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let reserveEquipe2Modal = document.getElementById('modalAjouterReserveEquipe2');
+reserveEquipe2Modal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('update_reserve_equipe2', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("reserveEquipe2FormContainer").innerHTML = html;
+});
+});
+document.getElementById("formAjouterReserveEquipe2").addEventListener("submit", function (event) {
+event.preventDefault();
+let formData = new FormData(this);
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("Réserve effectuée avec succès !");
+location.reload();
+} else {
+alert("Erreur lors de la reserve.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+let observationArbitreModal = document.getElementById('modalAjouterObservationArbitre');
+observationArbitreModal.addEventListener('show.bs.modal', function () {
+fetch("{{ path('update_observation_arbitre', {'id': matche.id}) }}").then(response => response.text()).then(html => {
+document.getElementById("observationArbitreFormContainer").innerHTML = html;
+});
+});
+document.getElementById("formAjouterOberservationArbitre").addEventListener("submit", function (event) {
+event.preventDefault();
+let formData = new FormData(this);
+fetch(this.action, {
+method: this.method,
+body: formData
+}).then(response => response.json()).then(data => {
+if (data.success) {
+alert("Observation effectuée avec succès !");
+location.reload();
+} else {
+alert("Erreur lors de la saisie.");
+}
+}).catch(error => console.error("Erreur:", error));
+});
+});
+		</script>
+		<script>
+			function confirmAction(event) {
+event.preventDefault(); // Empêche la redirection immédiate
+let confirmation = confirm("Si vous terminez ce match, soyez sûr que toutes les actions des équipes ont été faites (signtures et réserves), car vous ne pouvez plus revenir en arrière. \nVoulez-vous vraiment continuer ?");
+if (confirmation) {
+window.location.href = event.target.href; // Redirige si OK est cliqué
+}
+}
+		</script>
 
 
 	</body>

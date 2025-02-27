@@ -31,8 +31,16 @@ class SecurityController extends AbstractController
         
         // ✅ Création d'un administrateur
         // $admin = new User();
-        // $hashedPassword = $this->passwordHasher->hashPassword($admin, "Moussa");
-        // dd($hashedPassword);
+        // $hashedPassword1 = $this->passwordHasher->hashPassword($admin, "Moussa");
+        // $hashedPassword2 = $this->passwordHasher->hashPassword($admin, "insaInsa@0");
+        // $hashedPassword3 = $this->passwordHasher->hashPassword($admin, "tarkilTarkil@0");
+        // $hashedPassword4 = $this->passwordHasher->hashPassword($admin, "lepaLepa@0");
+        // dd($hashedPassword1,
+        // $hashedPassword2,
+        // $hashedPassword3,
+        // $hashedPassword4);
+
+         
 
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');

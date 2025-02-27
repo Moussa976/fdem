@@ -20,17 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MatcheController extends AbstractController
 {
-    /**
-     * @Route("/", name="app_matche_index", methods={"GET"})
-     */
-    public function index(MatcheRepository $matcheRepository, JoueurRepository $joueurRepository): Response
-    {
-        $joueurs = $joueurRepository->getClassementJoueurs();
-        return $this->render('matche/index.html.twig', [
-            'matches' => $matcheRepository->findAll(),
-            'joueurs' => $joueurs,
-        ]);
-    }
+    
 
     /**
      * @Route("/new", name="app_matche_new", methods={"GET", "POST"})
@@ -73,7 +63,7 @@ class MatcheController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="app_matche_edit", methods={"GET", "POST"})
+     * @Route("/edit/{id}", name="app_matche_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Matche $matche, MatcheRepository $matcheRepository): Response
     {
@@ -105,7 +95,7 @@ class MatcheController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/terminer", name="app_matche_terminer")
+     * @Route("/terminer/{id}", name="app_matche_terminer")
      */
     public function terminer(Matche $matche, EntityManagerInterface $em): Response
     {
@@ -117,7 +107,7 @@ class MatcheController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/feuille-pdf", name="app_matche_feuille_pdf")
+     * @Route("/feuille-pdf/{id}", name="app_matche_feuille_pdf")
      */
     public function feuillePdf(Matche $matche, JoueurRepository $joueurRepository): Response
     {
@@ -163,7 +153,7 @@ class MatcheController extends AbstractController
 
 
      /**
-     * @Route("/{id}/apercufeuille-pdf", name="app_matche_apercufeuille_pdf")
+     * @Route("/apercufeuille-pdf/{id}", name="app_matche_apercufeuille_pdf")
      */
     public function apercufeuillePdf(Matche $matche, JoueurRepository $joueurRepository): Response
     {

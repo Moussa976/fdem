@@ -7,7 +7,7 @@
 {% endblock %}
 {% block body %}
 	<div class="container mt-5 pt-4">
-		<h1 class="mb-4">Tableau de bord</h1>
+		<h1 class="mb-4">Tableau de bord </h1>
 		<div class="row g-2">
 			<div class="col-12 col-lg-7">
 				<div class="card mb-4" id="lesmatchs">
@@ -49,7 +49,7 @@
 												{{ matche.getScoreEquipe1 }}
 												-
 												{{ matche.getScoreEquipe2 }}
-											{% elseif matche.ladate <= date() %}
+											{% elseif matche.ladate|date("Y-m-d H:i:s", "Indian/Mayotte") <= "now"|date("Y-m-d H:i:s", "Indian/Mayotte") %}
 												<span class="badge bg-warning">En cours</span>
 											{% else %}
 												<span class="badge bg-info">À venir</span>
@@ -91,10 +91,18 @@
 															{% endif %}
 														</li>
 														<li>
-															<a href="{{ path('feuille_match_remplir', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
-																<i class='fas fa-pencil'></i>
-																Remplir la feuille
-															</a>
+															{% if matche.statut == "terminé" %}
+																<a class="btn btn-secondary dropdown-item" href="{{ path('app_matche_feuille_pdf', {'id': matche.id}) }}" target="_blank" class="btn btn-primary">
+																			<i class="fas fa-file-pdf"></i>
+																			Télécharger la feuille</a>
+																
+															{% else %}
+																<a href="{{ path('feuille_match_remplir', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
+																	<i class='fas fa-pencil'></i>
+																	Remplir la feuille
+																</a>
+															{% endif %}
+
 														</li>
 													</ul>
 												</div>

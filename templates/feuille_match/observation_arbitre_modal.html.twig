@@ -1,11 +1,11 @@
-{{ form_start(form, {'attr': {'id': 'formObservationArbitre'}}) }}
+{{ form_start(formObservationArbitre, {'attr': {'id': 'formAjouterOberservationArbitre'}}) }}
 <div class="mb-3 row">
-	{{ form_label(form.observationArbitre) }}
+	{{ form_label(formObservationArbitre.observationArbitre) }}
 	<div class="col-12">
-		{{ form_widget(form.observationArbitre, {'attr': {'class': 'form-control'}}) }}
+		{{ form_widget(formObservationArbitre.observationArbitre, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
 <div class="text-center">
 	<button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
 </div>
-{{ form_end(form) }}
+{{ form_end(formObservationArbitre) }}

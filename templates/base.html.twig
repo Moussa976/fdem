@@ -15,6 +15,7 @@
 
 	</head>
 	<body>
+		{% set now = "now"|date("U", "Indian/Mayotte") %}
 		{% include "navbar/nav.html.twig" %}
 		{% block body %}{% endblock %}
 

@@ -3,6 +3,18 @@
 {% block title %}Remplir Feuille de Match
 {% endblock %}
 
+{% block stylesheets %}
+<style>
+	.highlight-required {
+		border: 2px solid red;
+		background-color: #ffecec;
+	}
+</style>
+{% endblock %}
+
+	
+
+
 {% block body %}
 	<div class="container mt-5 pt-4">
 		<div class="my-3">
@@ -27,8 +39,13 @@
 							</button>
 						</div>
 						<div class="collapse" id="equipeRecevante">
+							{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}
 							<div class="form-floating">
-								{{ form_widget(form.dirigeantsEquipe1, {'attr': {'value': dirigeantsEquipe1 is not empty ? dirigeantsEquipe1|join(', ') : ' '}}) }}
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+									{{ form_widget(form.dirigeantsEquipe1, {'attr': {'value': dirigeantsEquipe1 is not empty ? dirigeantsEquipe1|join(', ') : ' '}}) }}
+								{% else %}
+									{{ form_widget(form.dirigeantsEquipe1, {'attr': {'value': dirigeantsEquipe1 is not empty ? dirigeantsEquipe1|join(', ') : ''}}) }}
+								{% endif %}
 								{{ form_label(form.dirigeantsEquipe1) }}
 							</div>
 							<div class="table-responsive">
@@ -53,6 +70,7 @@
 									</tbody>
 								</table>
 							</div>
+							{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
 						</div>
 					</div>
 					<div class="col-12 col-md-6">
@@ -63,8 +81,13 @@
 							</button>
 						</div>
 						<div class="collapse" id="equipeVisiteuse">
+							{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
 							<div class="form-floating">
-								{{ form_widget(form.dirigeantsEquipe2, {'attr': {'value': dirigeantsEquipe2 is not empty ? dirigeantsEquipe2|join(', ') : ' '}}) }}
+								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+									{{ form_widget(form.dirigeantsEquipe2, {'attr': {'value': dirigeantsEquipe2 is not empty ? dirigeantsEquipe2|join(', ') : ' '}}) }}
+								{% else %}
+									{{ form_widget(form.dirigeantsEquipe2, {'attr': {'value': dirigeantsEquipe2 is not empty ? dirigeantsEquipe2|join(', ') : ''}}) }}
+								{% endif %}
 								{{ form_label(form.dirigeantsEquipe2) }}
 							</div>
 							<div class="table-responsive">
@@ -89,6 +112,7 @@
 									</tbody>
 								</table>
 							</div>
+							{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
 						</div>
 					</div>
 				</div>
@@ -102,4 +126,138 @@
 		</div>
 		{{ form_end(form) }}
 	</div>
+{% endblock %}
+
+
+{% block javascripts %}
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+
+		// Les titulaires
+		const titulairesEquipe1 = document.querySelectorAll("input.titulairesEquipe1");
+		const titulairesEquipe2 = document.querySelectorAll("input.titulairesEquipe2");
+
+		// Les remplaçants
+		const remplacantsEquipe1 = document.querySelectorAll("input.remplacantsEquipe1");
+		const remplacantsEquipe2 = document.querySelectorAll("input.remplacantsEquipe2");
+
+		let maxTitulaires = 11;
+		let maxRemplacants = 6;
+
+		function countChecked(checkboxes) {
+			return Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+		}
+
+		function toggleRequiredField(checkbox) {
+			let row = checkbox.closest("tr");
+			let numeroInput = row.querySelector(".numeros");
+
+			if (checkbox.checked) {
+				numeroInput.required = true;
+				numeroInput.classList.add("highlight-required"); // Ajout d'un style pour le rendre visible
+			} else {
+				numeroInput.required = false;
+				numeroInput.classList.remove("highlight-required");
+			}
+		}
+
+		function preventDoubleSelection1(checkbox) {
+			let row = checkbox.closest("tr");
+			let otherCheckbox = row.querySelector(checkbox.classList.contains("titulairesEquipe1") ? ".remplacantsEquipe1" : ".titulairesEquipe1");
+
+			if (checkbox.checked) {
+				otherCheckbox.checked = false;
+				toggleRequiredField(otherCheckbox);
+			}
+		}
+
+
+		function updateCheckboxStates1() {
+			let checkedTitulaires = countChecked(titulairesEquipe1);
+			let checkedRemplacants = countChecked(remplacantsEquipe1);
+
+			titulairesEquipe1.forEach(checkbox => {
+				if (!checkbox.checked) {
+					checkbox.disabled = checkedTitulaires >= maxTitulaires;
+				}
+			});
+
+			remplacantsEquipe1.forEach(checkbox => {
+				if (!checkbox.checked) {
+					checkbox.disabled = checkedRemplacants >= maxRemplacants;
+				}
+			});
+		}
+
+		titulairesEquipe1.forEach(checkbox => {
+			checkbox.addEventListener("change", function () {
+				toggleRequiredField(this);
+				preventDoubleSelection1(this);
+				updateCheckboxStates1();
+			});
+		});
+
+		remplacantsEquipe1.forEach(checkbox => {
+			checkbox.addEventListener("change", function () {
+				toggleRequiredField(this);
+				preventDoubleSelection1(this);
+				updateCheckboxStates1();
+			});
+		});
+
+		// Mise à jour initiale des états des cases à cocher
+		updateCheckboxStates1();
+
+
+		function preventDoubleSelection2(checkbox) {
+			let row = checkbox.closest("tr");
+			let otherCheckbox = row.querySelector(checkbox.classList.contains("titulairesEquipe2") ? ".remplacantsEquipe2" : ".titulairesEquipe2");
+
+			if (checkbox.checked) {
+				otherCheckbox.checked = false;
+				toggleRequiredField(otherCheckbox);
+			}
+		}
+
+		
+
+		function updateCheckboxStates2() {
+			let checkedTitulaires = countChecked(titulairesEquipe2);
+			let checkedRemplacants = countChecked(remplacantsEquipe2);
+
+			titulairesEquipe2.forEach(checkbox => {
+				if (!checkbox.checked) {
+					checkbox.disabled = checkedTitulaires >= maxTitulaires;
+				}
+			});
+
+			remplacantsEquipe2.forEach(checkbox => {
+				if (!checkbox.checked) {
+					checkbox.disabled = checkedRemplacants >= maxRemplacants;
+				}
+			});
+		}
+
+		
+		titulairesEquipe2.forEach(checkbox => {
+			checkbox.addEventListener("change", function () {
+				toggleRequiredField(this);
+				preventDoubleSelection2(this);
+				updateCheckboxStates2();
+			});
+		});
+
+		remplacantsEquipe2.forEach(checkbox => {
+			checkbox.addEventListener("change", function () {
+				toggleRequiredField(this);
+				preventDoubleSelection2(this);
+				updateCheckboxStates2();
+			});
+		});
+
+		// Mise à jour initiale des états des cases à cocher
+		updateCheckboxStates2();
+	});
+
+</script>
 {% endblock %}
