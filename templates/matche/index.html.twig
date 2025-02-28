@@ -20,7 +20,7 @@
 				<div class="card mb-4" id="lesmatchs">
 					<div class="card-header bg-primary text-white">Les matchs</div>
 					<div class="card-body table-responsive overflow" style="height:500px;">
-						{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+						{% if app.user and is_granted('ROLE_ADMIN') %}
 							<div class="my-2 text-center">
 								<a name="" id="" class="btn btn-success" href="{{path('app_matche_new')}}" role="button">
 									<i class="fas fa-plus-circle"></i>
@@ -31,7 +31,7 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+									{% if app.user and is_granted('ROLE_ADMIN') %}
 										<th>#</th>
 									{% endif %}
 									<th>Équipe recevante</th>
@@ -47,7 +47,7 @@
 							<tbody>
 								{% for matche in matches %}
 									<tr>
-										{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+										{% if app.user and is_granted('ROLE_ADMIN') %}
 											<td>{{ matche.id }}</td>
 										{% endif %}
 										<td>{{ matche.equipe1.nom }}</td>
@@ -85,15 +85,30 @@
 													<ul class="dropdown-menu text-center" aria-labelledby="actionMatch{{loop.index}}">
 														<li>
 															<a href="{{ path('app_matche_apercufeuille_pdf', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
-																<i class='fas fa-eye'></i>
-																Voir
+																{% if is_granted('ROLE_EQUIPE') and matche.equipe1.id == app.user.equipe.id %}
+																	{% if matche.feuilleMatch.signatureavantEquipe1 %}
+																		📜 Voir la feuille de match
+																	{% else %}
+																		✍️ Signer la feuille de match
+																	{% endif %}
+																	
+																	
+																{% elseif is_granted('ROLE_EQUIPE') and matche.equipe2.id == app.user.equipe.id %}
+																	{% if matche.feuilleMatch.signatureavantEquipe2 %}
+																		📜 Voir la feuille de match
+																	{% else %}
+																		✍️ Signer la feuille de match
+																	{% endif %}
+																{% else %}
+																	⚙️ Gérer la feuille de match
+																{% endif %}
 															</a>
 														</li>
 														<li>
-															{% if 'ROLE_ADMIN' in app.user.roles %}
+															{% if is_granted('ROLE_ADMIN') %}
 																<a href="{{ path('app_matche_edit', {'id': matche.id}) }}" class="dropdown-item btn btn-sm">
-																	<i class='fas fa-pencil'></i>
-																	Modifier
+																	<i class='fas fa-edit'></i>
+																	Modifier le match
 																</a>
 															{% endif %}
 														</li>
@@ -119,7 +134,7 @@
 								{% else %}
 									<tr class="text-center">
 										<td colspan="7">Aucun match créé !
-											{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+											{% if app.user and is_granted('ROLE_ADMIN') %}
 												<a name="" id="" class="btn btn-success" href="{{path('app_matche_new')}}" role="button">
 													<i class="fas fa-plus-circle"></i>
 													Créer un match</a>
@@ -154,7 +169,7 @@
 										<th>
 											<i class='fas fa-square' style='color:red'></i>
 										</th>
-										{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+										{% if app.user and is_granted('ROLE_ADMIN') %}
 											<th>Actions</th>
 										{% endif %}
 									</tr>
@@ -168,7 +183,7 @@
 											<td>{{ joueur.nbButs }}</td>
 											<td>{{ joueur.nbCartonsJaunes }}</td>
 											<td>{{ joueur.nbCartonsRouges }}</td>
-											{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+											{% if app.user and is_granted('ROLE_ADMIN') %}
 												<td>
 													<a class="btn btn-info btn-sm" href="{{ path('app_joueur_show', {'id': joueur[0].id}) }}">
 														<i class='fas fa-eye'></i>

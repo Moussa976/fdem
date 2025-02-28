@@ -34,11 +34,11 @@ class FeuilleMatchController extends AbstractController
                 return $this->redirectToRoute('app_matche_index');
 
 
-            } elseif ($user->getEquipe()->getId() === $matche->getEquipe2()->getId() && $matche->getFeuilleMatch()->isSignatureavantEquipe2()) {
-                $this->addFlash('danger', 'Vous avez déjà signé le début du match. Vous ne pouvez pas remplir la feuille de match après le début.');
-                return $this->redirectToRoute('app_matche_index');
             } else {
-
+                if ($user->getEquipe()->getId() === $matche->getEquipe2()->getId() && $matche->getFeuilleMatch()->isSignatureavantEquipe2()) {
+                    $this->addFlash('danger', 'Vous avez déjà signé le début du match. Vous ne pouvez pas remplir la feuille de match après le début.');
+                    return $this->redirectToRoute('app_matche_index');
+                }
             }
         }
 
