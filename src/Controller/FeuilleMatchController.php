@@ -125,6 +125,21 @@ class FeuilleMatchController extends AbstractController
                 }
             }
 
+            // Récupérer les joueurs du match
+            $joueurs = array_merge($titulairesEquipe1, $remplacantsEquipe1, $titulairesEquipe2, $remplacantsEquipe2);
+            $joueursObjets = $joueurRepository->findBy(['id' => $joueurs]);
+            $historiqueJoueurs = [];
+            foreach ($joueursObjets as $joueur) {
+
+                $historiqueJoueurs[$joueur->getId()] = [
+                    'nom' => $joueur->getNom(),
+                    'equipe' => $joueur->getEquipe() ? $joueur->getEquipe()->getNom() : null,
+                ];
+            }
+
+            // Enregistrer cet historique dans la feuille de match
+            $feuilleMatch->setHistoriqueJoueurs($historiqueJoueurs);
+
             // Sauvegarde en base de données
             $em->persist($feuilleMatch);
             $em->flush();

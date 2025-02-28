@@ -43,9 +43,9 @@ class JoueurRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('j')
             ->leftJoin('j.buts', 'b')
-            ->leftJoin('j.cartons', 'c')
-            ->leftJoin('j.equipe', 'e')
-            ->addSelect('e')
+            ->leftJoin('b.equipeAuMomentDuBut', 'e') // Associer les buts à l'équipe du moment
+            ->addSelect('b, e') // Ajoute explicitement 'b' et 'e' pour éviter l'erreur
+            
             ->addSelect('COUNT(DISTINCT b.id) AS nbButs')
             ->addSelect('(SELECT COUNT(cj.id) FROM App\Entity\Carton cj WHERE cj.joueur = j.id AND cj.couleur = \'jaune\') AS nbCartonsJaunes')
             ->addSelect('(SELECT COUNT(cr.id) FROM App\Entity\Carton cr WHERE cr.joueur = j.id AND cr.couleur = \'rouge\') AS nbCartonsRouges')
@@ -58,21 +58,23 @@ class JoueurRepository extends ServiceEntityRepository
     
 
     public function getStatistiquesJoueur(int $joueurId)
-{
-    return $this->createQueryBuilder('j')
-        ->leftJoin('j.buts', 'b')
-        ->leftJoin('j.cartons', 'c')
-        ->leftJoin('j.equipe', 'e')
-        ->addSelect('e')
-        ->addSelect('COUNT(DISTINCT b.id) AS nbButs')
-        ->addSelect('(SELECT COUNT(cj.id) FROM App\Entity\Carton cj WHERE cj.joueur = j.id AND cj.couleur = \'jaune\') AS nbCartonsJaunes')
-        ->addSelect('(SELECT COUNT(cr.id) FROM App\Entity\Carton cr WHERE cr.joueur = j.id AND cr.couleur = \'rouge\') AS nbCartonsRouges')
-        ->where('j.id = :joueurId')
-        ->setParameter('joueurId', $joueurId)
-        ->groupBy('j.id, e.id')
-        ->getQuery()
-        ->getOneOrNullResult();
-}
+    {
+        return $this->createQueryBuilder('j')
+            ->leftJoin('j.buts', 'b')
+            ->leftJoin('b.equipeAuMomentDuBut', 'e') // Associer les buts à l'équipe du moment
+            ->leftJoin('j.cartons', 'c')
+
+            ->addSelect('b, e') // Ajoute explicitement 'b' et 'e' pour éviter l'erreur
+            
+            ->addSelect('COUNT(DISTINCT b.id) AS nbButs')
+            ->addSelect('(SELECT COUNT(cj.id) FROM App\Entity\Carton cj WHERE cj.joueur = j.id AND cj.couleur = \'jaune\') AS nbCartonsJaunes')
+            ->addSelect('(SELECT COUNT(cr.id) FROM App\Entity\Carton cr WHERE cr.joueur = j.id AND cr.couleur = \'rouge\') AS nbCartonsRouges')
+            ->where('j.id = :joueurId')
+            ->setParameter('joueurId', $joueurId)
+            ->groupBy('j.id, e.id')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 
     //    /**

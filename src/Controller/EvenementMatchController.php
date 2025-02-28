@@ -43,6 +43,7 @@ class EvenementMatchController extends AbstractController
 
         $but = new But();
         $but->setMatche($matche);
+        
 
         $form = $this->createForm(ButType::class, $but, [
             'joueurs' => $joueurs, // On passe les joueurs au formulaire
@@ -51,6 +52,7 @@ class EvenementMatchController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $but->setEquipeAuMomentDuBut($but->getJoueur()->getEquipe());
             $em->persist($but);
             $em->flush();
 

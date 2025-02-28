@@ -97,6 +97,11 @@ class FeuilleMatch
      */
     private $observationArbitre;
 
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $historiqueJoueurs = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -297,6 +302,17 @@ class FeuilleMatch
     {
         $this->observationArbitre = $observationArbitre;
 
+        return $this;
+    }
+
+    public function getHistoriqueJoueurs(): array
+    {
+        return $this->historiqueJoueurs ?? [];
+    }
+
+    public function setHistoriqueJoueurs(array $historiqueJoueurs): self
+    {
+        $this->historiqueJoueurs = $historiqueJoueurs;
         return $this;
     }
 }

@@ -84,6 +84,16 @@ class Matche
      */
     private $lieu;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $scoreEquipe1;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $scoreEquipe2;
+
     public function __construct()
     {
         $this->buts = new ArrayCollection();
@@ -261,14 +271,14 @@ class Matche
     public function getScoreEquipe1(): int
     {
         return array_reduce($this->getButs()->toArray(), function ($carry, $but) {
-            return $but->getJoueur()->getEquipe() === $this->getEquipe1() ? $carry + 1 : $carry;
+            return $but->getEquipeAuMomentDuBut() === $this->getEquipe1() ? $carry + 1 : $carry;
         }, 0);
     }
 
     public function getScoreEquipe2(): int
     {
         return array_reduce($this->getButs()->toArray(), function ($carry, $but) {
-            return $but->getJoueur()->getEquipe() === $this->getEquipe2() ? $carry + 1 : $carry;
+            return $but->getEquipeAuMomentDuBut() === $this->getEquipe2() ? $carry + 1 : $carry;
         }, 0);
     }
 
@@ -316,6 +326,20 @@ class Matche
     public function setLieu(?string $lieu): self
     {
         $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function setScoreEquipe1(?int $scoreEquipe1): self
+    {
+        $this->scoreEquipe1 = $scoreEquipe1;
+
+        return $this;
+    }
+
+    public function setScoreEquipe2(?int $scoreEquipe2): self
+    {
+        $this->scoreEquipe2 = $scoreEquipe2;
 
         return $this;
     }

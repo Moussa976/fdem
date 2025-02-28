@@ -44,11 +44,17 @@ class Equipe
      */
     private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity=But::class, mappedBy="equipeAuMomentDuBut")
+     */
+    private $buts;
+
 
     public function __construct()
     {
         $this->joueurs = new ArrayCollection();
         $this->matches = new ArrayCollection();
+        $this->buts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,6 +164,36 @@ class Equipe
         }
 
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, But>
+     */
+    public function getButs(): Collection
+    {
+        return $this->buts;
+    }
+
+    public function addBut(But $but): self
+    {
+        if (!$this->buts->contains($but)) {
+            $this->buts[] = $but;
+            $but->setEquipeAuMomentDuBut($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBut(But $but): self
+    {
+        if ($this->buts->removeElement($but)) {
+            // set the owning side to null (unless already changed)
+            if ($but->getEquipeAuMomentDuBut() === $this) {
+                $but->setEquipeAuMomentDuBut(null);
+            }
+        }
 
         return $this;
     }

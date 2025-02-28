@@ -228,11 +228,20 @@
 					{% set maxLignes = 11 %}
 					{% set joueursEquipe1 = [] %}
 					{% for joueurId in matche.feuilleMatch.titulairesEquipe1 %}
-						{% set joueursEquipe1 = joueursEquipe1|merge([joueurs[joueurId]]) %}
+						{% if joueurs[joueurId] is defined %}
+							{% set joueursEquipe1 = joueursEquipe1|merge([joueurs[joueurId]]) %}
+						{% else %}
+							{% set joueursEquipe1 = joueursEquipe1|merge([matche.feuilleMatch.historiqueJoueurs[joueurId]]) %}
+						{% endif %}
 					{% endfor %}
+
 					{% set joueursEquipe2 = [] %}
 					{% for joueurId in matche.feuilleMatch.titulairesEquipe2 %}
-						{% set joueursEquipe2 = joueursEquipe2|merge([joueurs[joueurId]]) %}
+						{% if joueurs[joueurId] is defined %}
+							{% set joueursEquipe2 = joueursEquipe2|merge([joueurs[joueurId]]) %}
+						{% else %}
+							{% set joueursEquipe2 = joueursEquipe2|merge([matche.feuilleMatch.historiqueJoueurs[joueurId]]) %}
+						{% endif %}
 					{% endfor %}
 					<div class="col-12 col-md-6 table-responsive mb-2">
 						<table class="table table-striped">
@@ -348,27 +357,35 @@
 										{% endfor %}
 									</td>
 									<td colspan="2">avant match :
-										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}
-										<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="avantequipe1" {% if matche.feuilleMatch.signatureavantEquipe1 %} disabled {% endif %}>
-											{% if matche.feuilleMatch.signatureavantEquipe1 %}
-												signé ✅
-											{% else %}
-												✍️ Je signe
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+											<fieldset disabled>
 											{% endif %}
-										</button>
-										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
-									</td>
-									<td colspan="2">après match :
-										{% if matche.feuilleMatch.signatureavantEquipe1 %}
-										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}	
-										<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="apresequipe1" {% if matche.feuilleMatch.signatureapresEquipe1 %} disabled {% endif %}>
-												{% if matche.feuilleMatch.signatureapresEquipe1 %}
+											<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="avantequipe1" {% if matche.feuilleMatch.signatureavantEquipe1 %} disabled {% endif %}>
+												{% if matche.feuilleMatch.signatureavantEquipe1 %}
 													signé ✅
 												{% else %}
 													✍️ Je signe
 												{% endif %}
 											</button>
-											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+											</fieldset>
+										{% endif %}
+									</td>
+									<td colspan="2">après match :
+										{% if matche.feuilleMatch.signatureavantEquipe1 %}
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+												<fieldset disabled>
+												{% endif %}
+												<button id="signEquipe1" class="btn btn-primary btn-sm" data-type="apresequipe1" {% if matche.feuilleMatch.signatureapresEquipe1 %} disabled {% endif %}>
+													{% if matche.feuilleMatch.signatureapresEquipe1 %}
+														signé ✅
+													{% else %}
+														✍️ Je signe
+													{% endif %}
+												</button>
+												{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+												</fieldset>
+											{% endif %}
 										{% endif %}
 									</td>
 								</tr>
@@ -379,16 +396,24 @@
 							<div class="card-body">
 								<p class="card-text">
 									Réserve de l'équipe recevante :<br>
-								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}<fieldset disabled>{% endif %}
-								{% if matche.feuilleMatch.reserveEquipe1 %}
-									{{ matche.feuilleMatch.reserveEquipe1 }}
-									
-									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Modifier</button>{% endif %}
-								{% else %}
-									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Écrire une réserve</button>{% endif %}
-								{% endif %}
-								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}</fieldset>{% endif %}
-							</p>
+									{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+										<fieldset disabled>
+										{% endif %}
+										{% if matche.feuilleMatch.reserveEquipe1 %}
+											{{ matche.feuilleMatch.reserveEquipe1 }}
+
+											{% if matche.statut != "terminé" %}
+												<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Modifier</button>
+											{% endif %}
+										{% else %}
+											{% if matche.statut != "terminé" %}
+												<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe1">✍️ Écrire une réserve</button>
+											{% endif %}
+										{% endif %}
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe1.id %}
+										</fieldset>
+									{% endif %}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -505,27 +530,35 @@
 										{% endfor %}
 									</td>
 									<td colspan="2">avant match :
-										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
-										<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="avantequipe2" {% if matche.feuilleMatch.signatureavantEquipe2 %} disabled {% endif %}>
-											{% if matche.feuilleMatch.signatureavantEquipe2 %}
-												signé ✅
-											{% else %}
-												✍️ Je signe
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+											<fieldset disabled>
 											{% endif %}
-										</button>
-										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
-									</td>
-									<td colspan="2">après match :
-										{% if matche.feuilleMatch.signatureavantEquipe2 %}
-											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
-											<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="apresequipe2" {% if matche.feuilleMatch.signatureapresEquipe2 %} disabled {% endif %}>
-												{% if matche.feuilleMatch.signatureapresEquipe2 %}
+											<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="avantequipe2" {% if matche.feuilleMatch.signatureavantEquipe2 %} disabled {% endif %}>
+												{% if matche.feuilleMatch.signatureavantEquipe2 %}
 													signé ✅
 												{% else %}
 													✍️ Je signe
 												{% endif %}
 											</button>
-											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+											</fieldset>
+										{% endif %}
+									</td>
+									<td colspan="2">après match :
+										{% if matche.feuilleMatch.signatureavantEquipe2 %}
+											{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+												<fieldset disabled>
+												{% endif %}
+												<button id="signEquipe2" class="btn btn-primary btn-sm" data-type="apresequipe2" {% if matche.feuilleMatch.signatureapresEquipe2 %} disabled {% endif %}>
+													{% if matche.feuilleMatch.signatureapresEquipe2 %}
+														signé ✅
+													{% else %}
+														✍️ Je signe
+													{% endif %}
+												</button>
+												{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+												</fieldset>
+											{% endif %}
 										{% endif %}
 									</td>
 								</tr>
@@ -533,17 +566,25 @@
 						</table>
 						<div class="card border-warning">
 							<div class="card-body">
-								<p class="card-text"> 
+								<p class="card-text">
 									Réserve de l'équipe visiteuse :<br>
-								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}<fieldset disabled>{% endif %}
-								{% if matche.feuilleMatch.reserveEquipe2 %}
-									{{ matche.feuilleMatch.reserveEquipe2 }}
-									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Modifier</button>{% endif %}
-								{% else %}
-									{% if matche.statut != "terminé" %}<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Écrire une réserve</button>{% endif %}
-								{% endif %}
-								{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}</fieldset>{% endif %}
-									</p>
+									{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+										<fieldset disabled>
+										{% endif %}
+										{% if matche.feuilleMatch.reserveEquipe2 %}
+											{{ matche.feuilleMatch.reserveEquipe2 }}
+											{% if matche.statut != "terminé" %}
+												<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Modifier</button>
+											{% endif %}
+										{% else %}
+											{% if matche.statut != "terminé" %}
+												<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAjouterReserveEquipe2">✍️ Écrire une réserve</button>
+											{% endif %}
+										{% endif %}
+										{% if is_granted('ROLE_EQUIPE') and app.user.equipe.id != matche.equipe2.id %}
+										</fieldset>
+									{% endif %}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -691,7 +732,7 @@ event.preventDefault();
 let formData = new FormData(this);
 let confirmation = confirm("But confirmé par l'arbitre ?");
 if (confirmation) {
-	fetch(this.action, {
+fetch(this.action, {
 method: this.method,
 body: formData
 }).then(response => response.json()).then(data => {
@@ -720,7 +761,7 @@ event.preventDefault();
 let formData = new FormData(this);
 let confirmation = confirm("Carton confirmé par l'arbitre ?");
 if (confirmation) {
-	fetch(this.action, {
+fetch(this.action, {
 method: this.method,
 body: formData
 }).then(response => response.json()).then(data => {

@@ -37,6 +37,11 @@ class But
      */
     private $matche;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="buts")
+     */
+    private $equipeAuMomentDuBut;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class But
     public function setMatche(?Matche $matche): self
     {
         $this->matche = $matche;
+
+        return $this;
+    }
+
+    public function getEquipeAuMomentDuBut(): ?Equipe
+    {
+        return $this->equipeAuMomentDuBut;
+    }
+
+    public function setEquipeAuMomentDuBut(?Equipe $equipeAuMomentDuBut): self
+    {
+        $this->equipeAuMomentDuBut = $equipeAuMomentDuBut;
 
         return $this;
     }
