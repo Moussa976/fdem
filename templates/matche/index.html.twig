@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin - Gestion des Matchs et Joueurs
-{% endblock %}
+
 {% block stylesheets %}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 {% block body %}
 	<div class="container mt-5 pt-4">
 		<h1 class="mb-4">Tableau de bord </h1>
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			{% endfor %}
+		{% endfor %}
 		<div class="row g-2">
 			<div class="col-12 col-lg-7">
 				<div class="card mb-4" id="lesmatchs">

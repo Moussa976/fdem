@@ -22,10 +22,10 @@ class DashboardController extends AbstractController
             if ($user->getEquipe()) {
                 $matches = $matcheRepository->findMatchsByEquipe($user->getEquipe());
             } else {
-                $matches = $matcheRepository->findAll();
+                $matches = $matcheRepository->findAllMatchs();
             }
         } else {
-            $matches = $matcheRepository->findAll();
+            $matches = $matcheRepository->findAllMatchs();
         }
 
 

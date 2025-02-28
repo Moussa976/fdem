@@ -50,6 +50,15 @@ class MatcheRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllMatchs()
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.ladate', 'DESC') // Trier par date, du plus récent au plus ancien
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Matche[] Returns an array of Matche objects
 //     */

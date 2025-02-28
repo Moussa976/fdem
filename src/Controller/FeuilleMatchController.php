@@ -16,18 +16,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class FeuilleMatchController extends AbstractController
 {
     /**
      * @Route("/feuille-match/remplir/{id}", name="feuille_match_remplir")
      */
-    public function remplirFeuille(Matche $matche, Request $request, JoueurRepository $joueurRepository, EntityManagerInterface $em): Response
+    public function remplirFeuille(Matche $matche, Request $request, JoueurRepository $joueurRepository, EntityManagerInterface $em, Security $security): Response
     {
-        // Vérifier que le match est "à venir"
-        if ($matche->getStatut() !== 'à venir') {
-            $this->addFlash('error', 'Vous ne pouvez pas remplir la feuille de match après le début.');
-            return $this->redirectToRoute('app_matche_index');
+        $user = $this->getUser();
+        if (!$security->isGranted('ROLE_ADMIN')) {
+            // Vérifier que le match est "à venir"
+            if ($user->getEquipe()->getId() === $matche->getEquipe1()->getId() && $matche->getFeuilleMatch()->isSignatureavantEquipe1()) {
+
+                $this->addFlash('danger', 'Vous avez déjà signé le début du match. Vous ne pouvez pas remplir la feuille de match après le début.');
+                return $this->redirectToRoute('app_matche_index');
+
+
+            } elseif ($user->getEquipe()->getId() === $matche->getEquipe2()->getId() && $matche->getFeuilleMatch()->isSignatureavantEquipe2()) {
+                $this->addFlash('danger', 'Vous avez déjà signé le début du match. Vous ne pouvez pas remplir la feuille de match après le début.');
+                return $this->redirectToRoute('app_matche_index');
+            } else {
+
+            }
         }
 
         // Récupérer la feuille de match existante ou en créer une nouvelle
