@@ -37,6 +37,7 @@ class JoueurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $joueurRepository->add($joueur, true);
 
+            $this->addFlash('success', 'Joueur '.$joueur->getNom().' inscrit avec succès !');
             return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -69,6 +70,7 @@ class JoueurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $joueurRepository->add($joueur, true);
 
+            $this->addFlash('success', 'Joueur '.$joueur->getNom().' modifié avec succès !');
             return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -83,10 +85,11 @@ class JoueurController extends AbstractController
      */
     public function delete(Request $request, Joueur $joueur, JoueurRepository $joueurRepository): Response
     {
+        $this->addFlash('success', 'Joueur '.$joueur->getNom().' supprimé avec succès !');
         if ($this->isCsrfTokenValid('delete'.$joueur->getId(), $request->request->get('_token'))) {
             $joueurRepository->remove($joueur, true);
         }
-
+       
         return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -20,10 +20,6 @@ class JoueurType extends AbstractType
                 'label' => 'Nom du joueur :',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'Abdou'],
             ])
-            ->add('numero', IntegerType::class, [
-                'label' => 'Numéro de maillot :',
-                'attr' => ['class' => 'form-control', 'placeholder' => '10', 'required' => 'false'],
-            ])
             ->add('equipe', EntityType::class, [
                 'class' => Equipe::class,
                 'choice_label' => 'nom',
