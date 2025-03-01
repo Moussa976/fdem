@@ -28,12 +28,17 @@
 								<i class="fas fa-user"></i> 
 								{% if is_granted('ROLE_EQUIPE') %}
 									{{ app.user.equipe.nom}}
+								{% elseif is_granted('ROLE_SUPERADMIN') %}
+									Super Admin
 								{% else %}
 									Admin
 								{% endif %}
 							</button>
 							<ul class="dropdown-menu">
 								<li>
+									<a class="dropdown-item" href="{{ path('app_register') }}">
+										<i class="fas fa-gear"></i>
+										Gérer les utilisateurs</a>
 									<a class="dropdown-item" href="{{ path('app_logout') }}">
 										<i class="fas fa-right-from-bracket"></i>
 										Se déconnecter</a>

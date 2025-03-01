@@ -5,8 +5,16 @@
 
 {% block body %}
 	<div class="container mt-5 pt-4">
-		<div class="row justify-content-center align-items-center g-2 mt-5">
-			<div class="col-12 col-md-6">
+		<div class="row g-2 mt-5">
+			{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			{% endfor %}
+		{% endfor %}
+			<div class="col-12 col-lg-6 mb-3">
 				{{ form_start(registrationForm) }}
 				<div class="card border-primary">
 					<h5 class="card-header text-center text-primary">S'inscrire</h5>
@@ -47,13 +55,72 @@
 				</div>
 				{{ form_end(registrationForm) }}
 			</div>
+			<div class="col-12 col-lg-6 mb-3">
+				<h2 class="text-center">Les utilisateurs inscrits</h2>
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Email</th>
+								<th>Roles</th>
+								<th>Equipe</th>
+								<th>actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for user in users %}
+								{% if app.user.id !=  user.id %}
+									<tr>
+										<td>{{ user.id }}</td>
+										<td>{{ user.email }}</td>
+										<td>
+											{% if 'ROLE_EQUIPE' in user.roles or 'ROLE_ADMIN' in user.roles %}
+												{% if 'ROLE_EQUIPE' in user.roles %}- Équipe 
+												{% endif %}
+												{% if 'ROLE_ADMIN' in user.roles %}- Admin 
+												{% endif %}
+											{% endif %}
+										</td>
+										<td>
+											{% if 'ROLE_EQUIPE' in user.roles and user.equipe is not null %}
+												{{ user.equipe.nom }}
+											{% endif %}
+										</td>
+										<td>
+											<div class="dropdown">
+												<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+													actions
+												</button>
+												<ul class="dropdown-menu">
+													<li>
+														<a class="dropdown-item disabled" href="{{ path('app_user_show', {'id': user.id}) }}">Voir</a>
+													</li>
+													<li>
+														<a class="dropdown-item disabled" href="{{ path('app_user_edit', {'id': user.id}) }}">Modifier</a>
+													</li>
+													<li>{{ include('user/_delete_form.html.twig') }}</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+								{% endif %}
+							{% else %}
+								<tr>
+
+									<td colspan="5">Aucun utilisateur trouvé !</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    document.getElementById("user_registration_form_equipe").removeAttribute("required");
-</script>
+	<script>
+		document.getElementById("user_registration_form_equipe").removeAttribute("required");
+	</script>
 {% endblock %}
-
