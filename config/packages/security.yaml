@@ -33,6 +33,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/joueur, roles: ROLE_ADMIN }
+        - { path: ^/joueur, roles: ROLE_SUPERADMIN }
         - { path: ^/but, roles: ROLE_ADMIN }
         - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_EQUIPE, IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: ^/matche/new, roles: ROLE_ADMIN }

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Feuilles de Matchs en Ligne | S'inscrire
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5 pt-4">
+		<div class="row justify-content-center align-items-center g-2 mt-5">
+			<div class="col-12 col-md-6">
+				{{ form_start(registrationForm) }}
+				<div class="card border-primary">
+					<h5 class="card-header text-center text-primary">S'inscrire</h5>
+					<div class="card-body text-primary">
+
+						<div class="mb-3 row">
+							{{ form_label(registrationForm.email) }}
+							<div class="col-12">
+								{{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+							</div>
+						</div>
+
+						<div class="mb-3 row">
+							{{ form_label(registrationForm.password) }}
+							<div class="col-12">
+								{{ form_widget(registrationForm.password, {'attr': {'class': 'form-control'}}) }}
+							</div>
+						</div>
+
+						<div class="form-check mb-3">
+							{{ form_label(registrationForm.roles) }}
+							<div class="col-12">{{ form_widget(registrationForm.roles) }}</div>
+						</div>
+
+						<div class="mb-3 row">
+							{{ form_label(registrationForm.equipe) }}
+							<div class="col-12">
+								{{ form_widget(registrationForm.equipe, {'attr': {'class': 'form-control'}}) }}
+							</div>
+						</div>
+
+						<div class="text-center my-4">
+							<button class="btn btn-sm btn-primary " type="submit">
+								S'inscrire
+							</button>
+						</div>
+					</div>
+				</div>
+				{{ form_end(registrationForm) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.getElementById("user_registration_form_equipe").removeAttribute("required");
+</script>
+{% endblock %}
+
