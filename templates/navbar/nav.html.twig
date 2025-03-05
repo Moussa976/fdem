@@ -40,9 +40,11 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li>
+									{% if is_granted('ROLE_SUPERADMIN') %}
 									<a class="dropdown-item" href="{{ path('app_register') }}">
 										<i class="fas fa-gear"></i>
 										Gérer les utilisateurs</a>
+									{% endif %}
 									<a class="dropdown-item" href="{{ path('app_logout') }}">
 										<i class="fas fa-right-from-bracket"></i>
 										Se déconnecter</a>

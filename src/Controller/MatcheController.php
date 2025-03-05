@@ -36,7 +36,7 @@ class MatcheController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $matche->setStatut('à venir');
             $matche->setFeuilleMatch($feuilleMatch); // Ajouter une nouvelle feuille de match à Matche
             $matche->getFeuilleMatch()->setMatche($matche); // Ajouter le match dans feuille de match
@@ -120,11 +120,9 @@ class MatcheController extends AbstractController
      */
     public function feuillePdf(Matche $matche, JoueurRepository $joueurRepository): Response
     {
-        // Récupérer tous les joueurs des deux équipes
         $joueursEquipe1 = $joueurRepository->findBy(['equipe' => $matche->getEquipe1()]);
         $joueursEquipe2 = $joueurRepository->findBy(['equipe' => $matche->getEquipe2()]);
 
-        // Indexer les joueurs par leur ID pour accès facile dans Twig
         $joueursIndexed = [];
         foreach (array_merge($joueursEquipe1, $joueursEquipe2) as $joueur) {
             $joueursIndexed[$joueur->getId()] = $joueur;
@@ -132,18 +130,16 @@ class MatcheController extends AbstractController
 
         $html = $this->renderView('matche/feuille_match_pdf.html.twig', [
             'matche' => $matche,
-            'joueurs' => $joueursIndexed, // On passe le tableau indexé par ID
+            'joueurs' => $joueursIndexed,
         ]);
 
-        // Noms des équipes
-        $nomEquipe1 = $matche->getEquipe1()->getNom();
-        $nomEquipe2 = $matche->getEquipe2()->getNom();
+        $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8'); // ✅ Encodage UTF-8
 
         $pdfOptions = new Options();
-        $pdfOptions->set('isRemoteEnabled', true); // Autorise le chargement des images via HTTP
+        $pdfOptions->set('isRemoteEnabled', true);
         $pdfOptions->set('isHtml5ParserEnabled', true);
         $pdfOptions->set('isPhpEnabled', true);
-        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('defaultFont', 'DejaVu Sans'); // ✅ Utilisation d’une police compatible avec les emojis
 
         $dompdf = new Dompdf($pdfOptions);
         $dompdf->loadHtml($html);
@@ -155,10 +151,11 @@ class MatcheController extends AbstractController
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="fdm - ' . $nomEquipe1 . ' VS ' . $nomEquipe2 . '.pdf"',
+                'Content-Disposition' => 'inline; filename="fdm - ' . $matche->getEquipe1()->getNom() . ' VS ' . $matche->getEquipe2()->getNom() . '.pdf"',
             ]
         );
     }
+
 
 
     /**

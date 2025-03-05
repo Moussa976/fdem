@@ -103,6 +103,14 @@
 				text-shadow: 5px 5px 0 rgba(0, 0, 255, 0.5), 10px 10px 0 rgba(0, 0, 255, 0.3);
 				display: inline-block;
 			}
+
+			.bg-signs-strong {
+				background-color:rgb(236, 210, 158);
+			}
+
+			.bg-signs {
+				background-color: #f9f3e7;
+			}
 		</style>
 	</head>
 	<body>
@@ -152,7 +160,7 @@
 								<th colspan="2" class="center">Arbitres</th>
 							</tr>
 							<tr>
-								<td class="w-50">central :
+								<td class="w-50">Central :
 								</td>
 								<td>{{ matche.arbitreCentral }}</td>
 							</tr>
@@ -284,36 +292,29 @@
 								</tr>
 							{% endfor %}
 							<tr>
-								<td colspan="3">Nom du capitaine ou dirigeant :</td>
-								<td colspan="4" class="center">Signatures</td>
+								<td class="bg-signs-strong" colspan="3">Nom du capitaine ou dirigeant :</td>
+								<td colspan="4" class="center bg-signs-strong">Signatures</td>
 							</tr>
 							<tr>
-								<td colspan="3">
+								<td class="bg-signs" colspan="3">
 									{% for dirigeant in matche.feuilleMatch.dirigeantsEquipe1 %}
 										-
 										{{ dirigeant }}<br>
 									{% endfor %}
 								</td>
-								<td colspan="2">avant match :
-									{% if matche.feuilleMatch.signatureavantEquipe1 %}
-										a signé ✔
-									{% else %}
-										n'a pas signé &#x2715;
-									{% endif %}
+								<td class="bg-signs" colspan="2">avant match : 
+									{% if matche.feuilleMatch.signatureavantEquipe1 %} signé {% else %} non signé {% endif %}
 								</td>
-								<td colspan="2">après match :
+								<td class="bg-signs" colspan="2">après match : 
 									{% if matche.statut == "terminé" %}
-										{% if matche.feuilleMatch.signatureapresEquipe1 %}a signé ✔
-										{% else %}
-											n'a pas signé &#x2715;
-										{% endif %}
+										{% if matche.feuilleMatch.signatureapresEquipe1 %} signé  {% else %} non signé {% endif %}
 									{% endif %}
 								</td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="7">
+								<td class=" bg-signs-strong" colspan="7">
 									<p>Réserve de l'équipe :<br>{{ matche.feuilleMatch.reserveEquipe1 }}</p>
 								</td>
 							</tr>
@@ -416,28 +417,22 @@
 								</tr>
 							{% endfor %}
 							<tr>
-								<td colspan="3">Nom du capitaine ou dirigeant :</td>
-								<td colspan="4" class="center">Signatures</td>
+								<td class=" bg-signs-strong" colspan="3">Nom du capitaine ou dirigeant :</td>
+								<td colspan="4" class="center  bg-signs-strong">Signatures</td>
 							</tr>
 							<tr>
-								<td colspan="3">
+								<td class="bg-signs" colspan="3">
 									{% for dirigeant in matche.feuilleMatch.dirigeantsEquipe2 %}
 										-
 										{{ dirigeant }}<br>
 									{% endfor %}
 								</td>
-								<td colspan="2">avant match :
-									{% if matche.feuilleMatch.signatureavantEquipe2 %}
-										a signé ✔
-									{% else %}
-										n'a pas signé &#x2715;
-									{% endif %}
+								<td class="bg-signs" colspan="2">avant match : 
+									{% if matche.feuilleMatch.signatureavantEquipe2 %} signé {% else %} non signé {% endif %}
 								</td>
-								<td colspan="2">après match :
+								<td class="bg-signs" colspan="2">après match : 
 									{% if matche.statut == "terminé" %}
-										{% if matche.feuilleMatch.signatureapresEquipe2 %}a signé ✔
-										{% else %}
-											n'a pas signé &#x2715;
+										{% if matche.feuilleMatch.signatureapresEquipe2 %} signé {% else %} non signé 
 										{% endif %}
 									{% endif %}
 								</td>
@@ -445,7 +440,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="7">
+								<td class=" bg-signs-strong" colspan="7">
 									<p>Réserve de l'équipe :<br>{{ matche.feuilleMatch.reserveEquipe2 }}</p>
 								</td>
 							</tr>
