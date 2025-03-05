@@ -35,9 +35,14 @@ class Equipe
     private $joueurs;
 
     /**
-     * @ORM\OneToMany(targetEntity=Matche::class, mappedBy="equipe1", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Matche::class, mappedBy="equipe1")
      */
-    private $matches;
+    private $matchesEquipe1;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Matche::class, mappedBy="equipe2")
+     */
+    private $matchesEquipe2;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, mappedBy="equipe", cascade={"persist", "remove"})
@@ -49,11 +54,11 @@ class Equipe
      */
     private $buts;
 
-
     public function __construct()
     {
         $this->joueurs = new ArrayCollection();
-        $this->matches = new ArrayCollection();
+        $this->matchesEquipe1 = new ArrayCollection();
+        $this->matchesEquipe2 = new ArrayCollection();
         $this->buts = new ArrayCollection();
     }
 
@@ -107,7 +112,6 @@ class Equipe
     public function removeJoueur(Joueur $joueur): self
     {
         if ($this->joueurs->removeElement($joueur)) {
-            // set the owning side to null (unless already changed)
             if ($joueur->getEquipe() === $this) {
                 $joueur->setEquipe(null);
             }
@@ -119,27 +123,55 @@ class Equipe
     /**
      * @return Collection<int, Matche>
      */
-    public function getMatches(): Collection
+    public function getMatchesEquipe1(): Collection
     {
-        return $this->matches;
+        return $this->matchesEquipe1;
     }
 
-    public function addMatch(Matche $match): self
+    public function addMatchEquipe1(Matche $match): self
     {
-        if (!$this->matches->contains($match)) {
-            $this->matches[] = $match;
+        if (!$this->matchesEquipe1->contains($match)) {
+            $this->matchesEquipe1[] = $match;
             $match->setEquipe1($this);
         }
 
         return $this;
     }
 
-    public function removeMatch(Matche $match): self
+    public function removeMatchEquipe1(Matche $match): self
     {
-        if ($this->matches->removeElement($match)) {
-            // set the owning side to null (unless already changed)
+        if ($this->matchesEquipe1->removeElement($match)) {
             if ($match->getEquipe1() === $this) {
                 $match->setEquipe1(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Matche>
+     */
+    public function getMatchesEquipe2(): Collection
+    {
+        return $this->matchesEquipe2;
+    }
+
+    public function addMatchEquipe2(Matche $match): self
+    {
+        if (!$this->matchesEquipe2->contains($match)) {
+            $this->matchesEquipe2[] = $match;
+            $match->setEquipe2($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchEquipe2(Matche $match): self
+    {
+        if ($this->matchesEquipe2->removeElement($match)) {
+            if ($match->getEquipe2() === $this) {
+                $match->setEquipe2(null);
             }
         }
 
@@ -153,12 +185,10 @@ class Equipe
 
     public function setUser(?User $user): self
     {
-        // unset the owning side of the relation if necessary
         if ($user === null && $this->user !== null) {
             $this->user->setEquipe(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($user !== null && $user->getEquipe() !== $this) {
             $user->setEquipe($this);
         }
@@ -189,7 +219,6 @@ class Equipe
     public function removeBut(But $but): self
     {
         if ($this->buts->removeElement($but)) {
-            // set the owning side to null (unless already changed)
             if ($but->getEquipeAuMomentDuBut() === $this) {
                 $but->setEquipeAuMomentDuBut(null);
             }

@@ -5,21 +5,35 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 {% block body %}
-	<div class="container mt-5 pt-4">
-		<h1 class="mb-4">Tableau de bord </h1>
-		{% for type, messages in app.flashes %}
+
+		<h1 class="mb-4 text-center">Gestion de feuilles de matchs en ligne ⚽📊</h1>
+		{# {% for type, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
 					{{ message }}
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 				</div>
 			{% endfor %}
-		{% endfor %}
+		{% endfor %} #}
 		<div class="row g-2">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-header text-center">
+						<div class="btn-group" role="group" aria-label="Basic mixed styles example">
+							<a class="btn btn-secondary" type="button" data-bs-toggle="collapse" href="#siteTournify" role="button" aria-expanded="false" aria-controls="siteTournify">Voir le classement et calendrier</a>
+							<a href="https://www.tournify.fr/live/ascm2025/standings" target="_blank" class="btn btn-primary"><i class="fas fa-up-right-from-square"></i></a>
+						</div>
+						
+					</div>
+					<div class="card-body collapse" id="siteTournify">
+						<iframe src="https://www.tournify.fr/live/ascm2025/standings" style="width: 100%; height:40vh;"></iframe>
+					</div>
+				</div>
+			</div>
 			<div class="col-12 col-lg-7">
 				<div class="card mb-4" id="lesmatchs">
 					<div class="card-header bg-primary text-white">Les matchs</div>
-					<div class="card-body table-responsive overflow" style="height:500px;">
+					<div class="card-body table-responsive overflow" style="height:auto; max-height:500px;">
 						{% if app.user and is_granted('ROLE_ADMIN') %}
 							<div class="my-2 text-center">
 								<a name="" id="" class="btn btn-success" href="{{path('app_matche_new')}}" role="button">
@@ -148,12 +162,15 @@
 					</div>
 				</div>
 			</div>
+
+
+
 			<div class="col-12 col-lg-5">
 				<div class="card mb-4" id="lesjoueurs">
 					<div class="card-header bg-primary text-white">Statistiques joueurs</div>
 					<div class="card-body">
 						<input type="text" id="search" class="form-control" placeholder="Nom de l'équipe ou joueur" value="">
-						<div class="table-responsive overflow" style="height:500px;">
+						<div class="table-responsive overflow" style="height:auto; max-height:430px;">
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -203,7 +220,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+
 {% endblock %}
 {% block javascripts %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

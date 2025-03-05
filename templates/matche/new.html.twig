@@ -8,8 +8,6 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5 pt-4">
-		<a class="btn btn-success mb-4" role="button" href="{{ path('app_matche_index') }}">Retour au Tableau de bord</a>
 		<h1 class="text-center">Créer un match</h1>
 		<div class="card mb-4" id="matchForm">
 			<div class="card-header bg-primary text-white">Créer un nouveau match</div>
@@ -17,9 +15,6 @@
 				{{ include('matche/_form.html.twig') }}
 			</div>
 		</div>
-		<a class="btn btn-success " role="button" href="{{ path('app_matche_index') }}">Retour au Tableau de bord</a>
-
-	</div>
 
 {% endblock %}
 {% block javascripts %}

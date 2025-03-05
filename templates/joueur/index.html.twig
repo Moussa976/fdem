@@ -1,82 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Joueur index
+{% block title %}Liste des joueurs
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5 pt-4">
-		<h1 class="mb-4 text-center">Les joueurs</h1>
-		{% for type, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-					{{ message }}
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
-			{% endfor %}
-		{% endfor %}
-		<div class="row g-2">
-			<div class="col-12 col-md-6">
-				<a class="btn btn-sm btn-primary" href="{{ path('app_joueur_new') }}">
-					<i class='fas fa-plus'></i>
-					Ajouter un joueur</a>
-			</div>
-			<div class="col-12 col-md-6">
-				<input type="text" id="search" class="form-control" placeholder="Nom de l'équipe ou joueur" value="">
-			</div>
+	<h1 class="mb-4 text-center">Les joueurs</h1>
+	<div class="row g-2">
+		<div class="col-12 col-md-6">
+			<a class="btn btn-sm btn-primary" href="{{ path('app_joueur_new') }}">
+				<i class='fas fa-plus'></i>
+				Ajouter un joueur</a>
 		</div>
+		<div class="col-12 col-md-6">
+			<input type="text" id="search" class="form-control" placeholder="Nom de l'équipe ou joueur" value="">
+		</div>
+	</div>
 
-		<div class="table-responsive overflow" style="height:500px;">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Id</th>
-						<th>Nom</th>
-						<th>Équipe</th>
-						<th>actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for joueur in joueurs %}
-						<tr class="tag_p" data-search-term="{{ joueur.nom|upper }}" data-tag="{{ joueur.equipe.nom|upper }}, {{ joueur.nom|upper }}">
-							<td>{{ joueur.id }}</td>
-							<td>{{ joueur.nom|upper }}</td>
-							<td><img src="{{ asset('images/'~ joueur.equipe.logo) }}" alt="{{ joueur.equipe.nom|upper }}" title="{{ joueur.equipe.nom|upper }}" style="height:20px; max-width:20px;">
-								{{ joueur.equipe.nom|upper }}</td>
-							<td>
+	<div class="table-responsive overflow" style="height:500px;">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Équipe</th>
+					<th>actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for joueur in joueurs %}
+					<tr class="tag_p" data-search-term="{{ joueur.nom|upper }}" data-tag="{{ joueur.equipe.nom|upper }}, {{ joueur.nom|upper }}">
+						<td>{{ joueur.id }}</td>
+						<td>{{ joueur.nom|upper }}</td>
+						<td><img src="{{ asset('images/'~ joueur.equipe.logo) }}" alt="{{ joueur.equipe.nom|upper }}" title="{{ joueur.equipe.nom|upper }}" style="height:20px; max-width:20px;">
+							{{ joueur.equipe.nom|upper }}</td>
+						<td>
 
 
-								<div class="dropdown">
-									<button class="btn dropdown-toggle" type="button" id="actionMatch{{loop.index}}" data-bs-toggle="dropdown" aria-expanded="false">
-										<i class='fas fa-gear'></i>
-									</button>
-									<ul class="dropdown-menu text-center" aria-labelledby="actionMatch{{loop.index}}">
-										<li>
-											<a href="{{ path('app_joueur_show', {'id': joueur.id}) }}" class="dropdown-item btn btn-sm">
-												📜 Voir
-											</a>
-										</li>
-										<li>
-											<a class="dropdown-item btn btn-sm" alt="Modifier" href="{{ path('app_joueur_edit', {'id': joueur.id}) }}">
-												✍️ Modifier
-											</a>
-										</li>
-										<li>
-											{{ include('joueur/_delete_form.html.twig') }}
-										</li>
-									</ul>
-								</td>
+							<div class="dropdown">
+								<button class="btn dropdown-toggle" type="button" id="actionMatch{{loop.index}}" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class='fas fa-gear'></i>
+								</button>
+								<ul class="dropdown-menu text-center" aria-labelledby="actionMatch{{loop.index}}">
+									<li>
+										<a href="{{ path('app_joueur_show', {'id': joueur.id}) }}" class="dropdown-item btn btn-sm">
+											📜 Voir
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item btn btn-sm" alt="Modifier" href="{{ path('app_joueur_edit', {'id': joueur.id}) }}">
+											✍️ Modifier
+										</a>
+									</li>
+									<li>
+										{{ include('joueur/_delete_form.html.twig') }}
+									</li>
+								</ul>
 							</td>
-						</tr>
-					</div>
-				</tbody>
-			</td>
-		</tr>
-	{% else %}
-		<tr>
-			<td colspan="4">Aucun joueur trouvé</td>
-		</tr>
-	{% endfor %}
-</tbody></table></div></div>{% endblock %}{% block javascripts %}<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script>// Récupérer le champ de saisie
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="4">Aucun joueur trouvé</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}
+{% block javascripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>
+		// Récupérer le champ de saisie
 const champTexte = document.getElementById('search');
 
 // Écouteur d'événement sur la saisie
@@ -93,4 +87,6 @@ $(this).show();
 $(this).toggle($(this).filter('[data-search-term*="' + searchTerm + '"], [data-tag*="' + searchTerm + '"]').length > 0);
 }
 });
-})</script>{% endblock %}
+})
+	</script>
+{% endblock %}

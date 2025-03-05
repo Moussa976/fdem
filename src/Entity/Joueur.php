@@ -30,7 +30,8 @@ class Joueur
     private $numero;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="joueurs", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="joueurs")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $equipe;
 
@@ -45,15 +46,21 @@ class Joueur
     private $cartons;
 
     /**
-     * @ORM\OneToMany(targetEntity=Remplacement::class, mappedBy="joueur_sortant", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Remplacement::class, mappedBy="joueurEntrant", cascade={"persist", "remove"})
      */
-    private $remplacements;
+    private $remplacementsJoueurEntrant;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Remplacement::class, mappedBy="joueurSortant", cascade={"persist", "remove"})
+     */
+    private $remplacementsJoueurSortant;
 
     public function __construct()
     {
         $this->buts = new ArrayCollection();
         $this->cartons = new ArrayCollection();
-        $this->remplacements = new ArrayCollection();
+        $this->remplacementsJoueurEntrant = new ArrayCollection();
+        $this->remplacementsJoueurSortant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,7 +125,6 @@ class Joueur
     public function removeBut(But $but): self
     {
         if ($this->buts->removeElement($but)) {
-            // set the owning side to null (unless already changed)
             if ($but->getJoueur() === $this) {
                 $but->setJoueur(null);
             }
@@ -148,7 +154,6 @@ class Joueur
     public function removeCarton(Carton $carton): self
     {
         if ($this->cartons->removeElement($carton)) {
-            // set the owning side to null (unless already changed)
             if ($carton->getJoueur() === $this) {
                 $carton->setJoueur(null);
             }
@@ -160,25 +165,53 @@ class Joueur
     /**
      * @return Collection<int, Remplacement>
      */
-    public function getRemplacements(): Collection
+    public function getRemplacementsJoueurEntrant(): Collection
     {
-        return $this->remplacements;
+        return $this->remplacementsJoueurEntrant;
     }
 
-    public function addRemplacement(Remplacement $remplacement): self
+    public function addRemplacementJoueurEntrant(Remplacement $remplacement): self
     {
-        if (!$this->remplacements->contains($remplacement)) {
-            $this->remplacements[] = $remplacement;
+        if (!$this->remplacementsJoueurEntrant->contains($remplacement)) {
+            $this->remplacementsJoueurEntrant[] = $remplacement;
+            $remplacement->setJoueurEntrant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRemplacementJoueurEntrant(Remplacement $remplacement): self
+    {
+        if ($this->remplacementsJoueurEntrant->removeElement($remplacement)) {
+            if ($remplacement->getJoueurEntrant() === $this) {
+                $remplacement->setJoueurEntrant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Remplacement>
+     */
+    public function getRemplacementsJoueurSortant(): Collection
+    {
+        return $this->remplacementsJoueurSortant;
+    }
+
+    public function addRemplacementJoueurSortant(Remplacement $remplacement): self
+    {
+        if (!$this->remplacementsJoueurSortant->contains($remplacement)) {
+            $this->remplacementsJoueurSortant[] = $remplacement;
             $remplacement->setJoueurSortant($this);
         }
 
         return $this;
     }
 
-    public function removeRemplacement(Remplacement $remplacement): self
+    public function removeRemplacementJoueurSortant(Remplacement $remplacement): self
     {
-        if ($this->remplacements->removeElement($remplacement)) {
-            // set the owning side to null (unless already changed)
+        if ($this->remplacementsJoueurSortant->removeElement($remplacement)) {
             if ($remplacement->getJoueurSortant() === $this) {
                 $remplacement->setJoueurSortant(null);
             }

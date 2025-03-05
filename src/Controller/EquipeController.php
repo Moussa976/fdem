@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @Route("/equipe")
@@ -35,8 +37,25 @@ class EquipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $equipeRepository->add($equipe, true);
+            /** @var UploadedFile $photoFile */
+            $photoFile = $form->get('logo')->getData();
 
+            if ($photoFile) {
+                $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                    $equipe->setLogo($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', 'Erreur lors du téléchargement de l\'image.');
+                }
+            }
+
+            $equipeRepository->add($equipe, true);
+            $this->addFlash('success', 'Équipe '.$equipe->getNom().' créée avec succès !');
             return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,7 +85,7 @@ class EquipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $equipeRepository->add($equipe, true);
-
+            $this->addFlash('success', 'Équipe '.$equipe->getNom().' modifié avec succès !');
             return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -82,6 +101,7 @@ class EquipeController extends AbstractController
     public function delete(Request $request, Equipe $equipe, EquipeRepository $equipeRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$equipe->getId(), $request->request->get('_token'))) {
+            $this->addFlash('success', 'Équipe '.$equipe->getNom().' supprimé avec succès !');
             $equipeRepository->remove($equipe, true);
         }
 

@@ -35,19 +35,25 @@ class Matche
     private $statut;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="matches")
+     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="matchesEquipe1")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $equipe1;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="matches")
+     * @ORM\ManyToOne(targetEntity=Equipe::class, inversedBy="matchesEquipe2")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $equipe2;
 
+
     /**
-     * @ORM\OneToOne(targetEntity=FeuilleMatch::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=FeuilleMatch::class, mappedBy="matche", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $feuilleMatch;
+
+
 
     /**
      * @ORM\OneToMany(targetEntity=But::class, mappedBy="matche", cascade={"persist", "remove"})

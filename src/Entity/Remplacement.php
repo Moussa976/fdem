@@ -18,17 +18,20 @@ class Remplacement
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Joueur::class, inversedBy="remplacements", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Joueur::class, inversedBy="remplacementsJoueurSortant", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $joueur_sortant;
+    private $joueurSortant;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Joueur::class, inversedBy="remplacements", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Joueur::class, inversedBy="remplacementsJoueurEntrant", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $joueur_entrant;
+    private $joueurEntrant;
 
     /**
      * @ORM\ManyToOne(targetEntity=Matche::class, inversedBy="remplacements", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $matche;
 
@@ -44,24 +47,24 @@ class Remplacement
 
     public function getJoueurSortant(): ?Joueur
     {
-        return $this->joueur_sortant;
+        return $this->joueurSortant;
     }
 
-    public function setJoueurSortant(?Joueur $joueur_sortant): self
+    public function setJoueurSortant(?Joueur $joueurSortant): self
     {
-        $this->joueur_sortant = $joueur_sortant;
+        $this->joueurSortant = $joueurSortant;
 
         return $this;
     }
 
     public function getJoueurEntrant(): ?Joueur
     {
-        return $this->joueur_entrant;
+        return $this->joueurEntrant;
     }
 
-    public function setJoueurEntrant(?Joueur $joueur_entrant): self
+    public function setJoueurEntrant(?Joueur $joueurEntrant): self
     {
-        $this->joueur_entrant = $joueur_entrant;
+        $this->joueurEntrant = $joueurEntrant;
 
         return $this;
     }

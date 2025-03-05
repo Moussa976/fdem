@@ -3,7 +3,10 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{% block title %}Gestion des Feuilles de Matchs en Ligne | Suivi & Organisation{% endblock %}</title>
+		<title>
+			{% block title %}Gestion des Feuilles de Matchs en Ligne ⚽📊 | Suivi & Organisation
+			{% endblock %}
+		</title>
 		<meta name="description" content="{% block meta_description %}Description de mon site{% endblock %}">
 		<meta name="keywords" content="football, match, compétition, sport, ascm-tournoi, ascm, Mtsahara">
 		<meta name="author" content="ASCM">
@@ -14,19 +17,118 @@
 		<link rel="icon" href="{{ asset('images/logo.ico')}}">
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		{# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
+
+		<style>
+			#loader-wrapper {
+				position: fixed;
+				width: 100%;
+				height: 100%;
+				background: rgba(255, 255, 255, 0.9);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 9999;
+			}
+
+			.spinner {
+				width: 50px;
+				height: 50px;
+				border: 5px solid #ccc;
+				border-top: 5px solid #3498db;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+
+			{% block stylesheets %}
+				{{encore_entry_link_tags('app')}}
+			{% endblock %}
+		</style>
+
 
 	</head>
 	<body>
 		{% set now = "now"|date("U", "Indian/Mayotte") %}
 		{% include "navbar/nav.html.twig" %}
-		{% block body %}{% endblock %}
+		<div class="container mt-5 pt-5">
+			{% if app.request.attributes.get('_route') != 'app_matche_index' and app.request.attributes.get('_route') != 'app_login' %}
+				<a class="btn btn-success mb-4" role="button" href="{{ path('app_matche_index') }}">
+					<i class="fas fa-arrow-left"></i>
+					Retour au Tableau de bord</a>
+			{% endif %}
 
+			{% block body %}{% endblock %}
+
+			{% if app.request.attributes.get('_route') != 'app_matche_index' and app.request.attributes.get('_route') != 'app_login' %}
+				<a class="btn btn-success my-4" role="button" href="{{ path('app_matche_index') }}">
+					<i class="fas fa-arrow-left"></i>
+					Retour au Tableau de bord</a>
+			{% endif %}
+		</div>
+		<div id="loader-wrapper">
+			<div class="spinner"></div>
+		</div>
+
+		<footer class=" {% if app.request.attributes.get('_route') == 'app_login' %} mt-5 {% endif %} bottom-0 bg-secondary text-white text-center p-3">
+			© Gestion FM {{now|date('Y')}} | Site créé by <a href="http://moussa.ascm-tournoi.fr" target="_blank">Moussa</a>
+		</footer>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		{% for type, messages in app.flashes %}
+			{% for message in messages %}
+				<script>
+					Swal.fire({
+						icon: "{{ type == 'success' ? 'success' : 'error' }}",
+						title: "{% if type == 'success' %} Succès {% else %} Erreur {% endif %}",
+						text: "{{ message }}",
+						timer: 3000,
+						showConfirmButton: false
+					});
+				</script>
+
+
+
+			{% endfor %}
+		{% endfor %}
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault();
+
+let form = this.closest("form");
+
+Swal.fire({
+title: "Êtes-vous sûr ?",
+text: "Cette action est irréversible !",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Oui, supprimer",
+cancelButtonText: "Annuler"
+}).then((result) => {
+if (result.isConfirmed) {
+form.submit(); // On soumet le formulaire Symfony
+}
+});
+});
+});
+document.getElementById("loader-wrapper").style.display = "none"; // Ajouter un effet de chargement fluide pendant que la page charge.
+});
+		</script>
+
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}

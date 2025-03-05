@@ -25,6 +25,17 @@ class UserRegistrationController extends AbstractController
         $users = $userRepository->findAll();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Vérifier si l'utilisateur a une équipe attribuée
+            if ($user->getEquipe() !== null) {
+                $existingUser = $userRepository->findOneBy(['equipe' => $user->getEquipe()]);
+                if ($existingUser) {
+                    // $this->addFlash('danger', 'Cette équipe "'.$user->getEquipe()->getNom().'" est déjà attribuée à un autre utilisateur.');
+                    $this->addFlash('danger', 'Cette équipe est déjà attribuée à un autre utilisateur.');
+                    return $this->redirectToRoute('app_register');
+                }
+            }
+
             // Hachage du mot de passe
             $user->setPassword($passwordHasher->hashPassword($user, $form->get('password')->getData()));
 
@@ -32,7 +43,7 @@ class UserRegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Utilisateur inscrit avec succès !');
+            $this->addFlash('success', 'Nouveau utilisateur inscrit avec succès !');
             return $this->redirectToRoute('app_register');
         }
 

@@ -47,10 +47,14 @@ class FeuilleMatch
      */
     private $dirigeantsEquipe2 = [];
 
+
     /**
-     * @ORM\OneToOne(targetEntity=Matche::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Matche::class, inversedBy="feuilleMatch", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $matche;
+
+
 
     /**
      * @ORM\Column(type="json")

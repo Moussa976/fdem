@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\FeuilleMatch;
 use App\Entity\Matche;
 use App\Form\MatcheType;
+use App\Repository\FeuilleMatchRepository;
 use App\Repository\JoueurRepository;
 use App\Repository\MatcheRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,13 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/matche")
  */
 class MatcheController extends AbstractController
 {
-    
+
 
     /**
      * @Route("/new", name="app_matche_new", methods={"GET", "POST"})
@@ -34,10 +36,13 @@ class MatcheController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
             $matche->setStatut('à venir');
-            $matche->setFeuilleMatch($feuilleMatch);
+            $matche->setFeuilleMatch($feuilleMatch); // Ajouter une nouvelle feuille de match à Matche
+            $matche->getFeuilleMatch()->setMatche($matche); // Ajouter le match dans feuille de match
+            // dd($matche, $feuilleMatch);
             $matcheRepository->add($matche, true);
-
+            $this->addFlash('success', 'Match créé !');
             return $this->redirectToRoute('app_matche_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -50,16 +55,20 @@ class MatcheController extends AbstractController
     /**
      * @Route("/{id}", name="app_matche_show", methods={"GET"})
      */
-    public function show(Matche $matche, EntityManagerInterface $em): Response
+    public function show(Matche $matche, EntityManagerInterface $em, Security $security): Response
     {
-        if ($matche->getStatut() === 'à venir' && $matche->getLadate() <= new \DateTime()) {
-            $matche->setStatut('en cours');
-            $em->flush();
-        }
+        if ($security->isGranted('ROLE_SUPERADMIN')) {
+            if ($matche->getStatut() === 'à venir' && $matche->getLadate() <= new \DateTime()) {
+                $matche->setStatut('en cours');
+                $em->flush();
+            }
 
-        return $this->render('matche/show.html.twig', [
-            'matche' => $matche,
-        ]);
+            return $this->render('matche/show.html.twig', [
+                'matche' => $matche,
+            ]);
+        } else {
+            return $this->redirectToRoute('app_matche_apercufeuille_pdf', ['id' => $matche->getId()]);
+        }
     }
 
     /**
@@ -146,13 +155,13 @@ class MatcheController extends AbstractController
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="fdm - '.$nomEquipe1.' VS '.$nomEquipe2.'.pdf"',
+                'Content-Disposition' => 'inline; filename="fdm - ' . $nomEquipe1 . ' VS ' . $nomEquipe2 . '.pdf"',
             ]
         );
     }
 
 
-     /**
+    /**
      * @Route("/apercufeuille-pdf/{id}", name="app_matche_apercufeuille_pdf")
      */
     public function apercufeuillePdf(Matche $matche, JoueurRepository $joueurRepository): Response
