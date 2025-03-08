@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Importer des Joueurs</h1>
+
+   
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-12 col-10">
+            <div class="mb-3">
+                {# <label for="fileDropZone" class="form-label"></label> #}
+                {{ form_label(form.fichier) }}
+                <div id="dropZone" class="border border-primary p-5 text-center">
+                    {{ form_widget(form.fichier) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <button id="importer" type="submit" class="btn btn-primary">Importer</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+    
+{% endblock %}
+{% block javascripts %}
+
+{% endblock %}

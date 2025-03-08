@@ -7,9 +7,26 @@
 	<h1 class="mb-4 text-center">Les joueurs</h1>
 	<div class="row g-2">
 		<div class="col-12 col-md-6">
-			<a class="btn btn-sm btn-primary" href="{{ path('app_joueur_new') }}">
-				<i class='fas fa-plus'></i>
-				Ajouter un joueur</a>
+			<div class="dropdown">
+				<button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class='fas fa-plus'></i>
+					Ajouter
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+						<a class="dropdown-item" href="{{ path('app_joueur_new') }}">
+							<i class='fas fa-plus'></i>
+							Ajouter un joueur</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{{ path('app_import_joueurs') }}">
+							<i class='fas fa-file-import'></i>
+							Importer des joueurs depuis un fichier excel (.xlsx)</a>
+					</li>
+				</ul>
+			</div>
+
+
 		</div>
 		<div class="col-12 col-md-6">
 			<input type="text" id="search" class="form-control" placeholder="Nom de l'équipe ou joueur" value="">
@@ -31,8 +48,16 @@
 					<tr class="tag_p" data-search-term="{{ joueur.nom|upper }}" data-tag="{{ joueur.equipe.nom|upper }}, {{ joueur.nom|upper }}">
 						<td>{{ joueur.id }}</td>
 						<td>{{ joueur.nom|upper }}</td>
-						<td><img src="{{ asset('images/'~ joueur.equipe.logo) }}" alt="{{ joueur.equipe.nom|upper }}" title="{{ joueur.equipe.nom|upper }}" style="height:20px; max-width:20px;">
-							{{ joueur.equipe.nom|upper }}</td>
+						<td>
+							{% if joueur.equipe.logo %}
+								<img src="{{ asset('images/'~ joueur.equipe.logo) }}" alt="{{ joueur.equipe.nom|upper }}" title="{{ joueur.equipe.nom|upper }}" style="height:20px; max-width:20px;">
+							{% else %}
+								<img src="{{ asset('images/logo-vierge.png') }}" alt="{{ joueur.equipe.nom|upper }}" title="{{ joueur.equipe.nom|upper }}" style="height:20px; max-width:20px;">
+							{% endif %}
+						
+							{{ joueur.equipe.nom|upper }}
+							
+						</td>
 						<td>
 
 

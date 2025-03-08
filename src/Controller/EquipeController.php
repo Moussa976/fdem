@@ -66,7 +66,7 @@ class EquipeController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="app_equipe_show", methods={"GET"})
+     * @Route("/show/{id}", name="app_equipe_show", methods={"GET"})
      */
     public function show(Equipe $equipe): Response
     {
@@ -76,7 +76,7 @@ class EquipeController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="app_equipe_edit", methods={"GET", "POST"})
+     * @Route("/edit/{id}", name="app_equipe_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Equipe $equipe, EquipeRepository $equipeRepository): Response
     {
@@ -96,7 +96,7 @@ class EquipeController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="app_equipe_delete", methods={"POST"})
+     * @Route("/delete/{id}", name="app_equipe_delete", methods={"POST"})
      */
     public function delete(Request $request, Equipe $equipe, EquipeRepository $equipeRepository): Response
     {

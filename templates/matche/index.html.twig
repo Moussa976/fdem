@@ -196,7 +196,17 @@
 										<tr class="tag_p" data-search-term="{{ joueur[0].nom|upper }}" data-tag="{{ joueur[0].equipe.nom|upper }}, {{ joueur[0].nom|upper }}">
 											<td>{{ loop.index }}</td>
 											<td>{{ joueur[0].nom|upper }}</td>
-											<td><img src="{{ asset('images/'~ joueur[0].equipe.logo) }}" alt="{{ joueur[0].equipe.nom|upper }}" title="{{ joueur[0].equipe.nom|upper }}" style="height:20px; max-width:20px;"></td>
+											<td>
+											{% if joueur[0].equipe.logo %}
+												<img src="{{ asset('images/'~ joueur[0].equipe.logo) }}" alt="{{ joueur[0].equipe.nom|upper }}" title="{{ joueur[0].equipe.nom|upper }}" style="height:20px; max-width:20px;">
+											{% else %}
+												<img src="{{ asset('images/logo-vierge.png') }}" alt="{{ joueur[0].equipe.nom|upper }}" title="{{ joueur[0].equipe.nom|upper }}" style="height:20px; max-width:20px;">
+											{% endif %}
+											
+											
+											
+											
+											</td>
 											<td>{{ joueur.nbButs }}</td>
 											<td>{{ joueur.nbCartonsJaunes }}</td>
 											<td>{{ joueur.nbCartonsRouges }}</td>

@@ -31,8 +31,13 @@
 					<tr class="tag_p" data-search-term="{{ equipe.nom|upper }}" data-tag="{{ equipe.nom|upper }}, {{ equipe.nom|upper }}">
 						<td>{{ equipe.id }}</td>
 						<td>{{ equipe.nom|upper }}</td>
-						<td><img src="{{ asset('images/'~ equipe.logo) }}" alt="{{ equipe.nom|upper }}" title="{{ equipe.nom|upper }}" style="height:40px; max-width:40px;">
-							</td>
+						<td>
+							{% if equipe.logo %}
+								<img src="{{ asset('images/'~ equipe.logo) }}" alt="{{ equipe.nom|upper }}" title="{{ equipe.nom|upper }}" style="height:40px; max-width:40px;">
+							{% else %}
+								<img src="{{ asset('images/logo-vierge.png') }}" alt="{{ equipe.nom|upper }}" title="{{ equipe.nom|upper }}" style="height:40px; max-width:40px;">
+							{% endif %}
+						</td>
 						<td>
 
 

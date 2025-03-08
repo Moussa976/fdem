@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos | Gestion de feuilles de matchs en ligne
+{% endblock %}
+
+{% block stylesheets %}
+	.card {
+		background-color: rgb(158, 202, 236);
+	}
+
+	.bg-version {
+		background-color : rgb(236, 158, 162);
+	}
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-center">À propos de Gestion FM
+		<small style="font-size:20px;">(Gestion de feuilles de matchs en ligne)</small>
+	</h1>
+	<p class="text-center">Bienvenue sur
+		<strong>Gestion FM</strong>, votre plateforme de gestion en ligne dédiée aux compétitions sportives.</p>
+
+	<h3>Notre mission :</h3>
+	<div class="card mb-3">
+		<div class="card-body">
+			<p  class="mb-0">Notre objectif est de fournir un outil pratique et performant permettant aux clubs, associations et passionnés de sport de suivre facilement les matchs, les résultats et les statistiques des joueurs et des équipes.</p>
+		</div>
+	</div>
+
+	<h3>Fonctionnalités principales :</h3>
+	<div class="card mb-3">
+		<div class="card-body">
+			<ul  class="mb-0">
+				<li>
+					<strong>Suivi en temps réel</strong>
+					des rencontres sportives.</li>
+				<li>
+					<strong>Affichage des feuilles de match</strong>
+					avec détails sur les joueurs et les équipes.</li>
+				<li>
+					<strong>Gestion centralisée</strong>
+					des matchs pour les organisateurs et clubs.</li>
+				<li>
+					<strong>Historique des compétitions et classements.</strong>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<h3>Créateur du site :</h3>
+	<div class="card mb-3">
+		<div class="card-body">
+			<p>Le site
+				<strong>Gestion FM</strong>
+				a été développé par
+				<strong>INSSA Moussa</strong>, un développeur web talentueux originaire de Mayotte. Spécialiste du développement en
+				<strong>Symfony et PHP</strong>, Moussa a mis en place cette plateforme pour répondre aux besoins des clubs sportifs souhaitant digitaliser leur gestion des matchs.</p>
+
+			<h5>À propos d’INSSA Moussa :</h5>
+			<p>Passionné par le développement web,
+				<strong>INSSA Moussa</strong>
+				possède une expertise en PHP, Symfony, JavaScript, Bootstrap, et bien d’autres technologies. Il a travaillé sur divers projets web, notamment
+				<strong>PicMe, Hesli</strong>
+				et plusieurs plateformes en ligne.</p>
+
+			<p>
+				<strong>📩 Contact :</strong>
+				<a href="mailto:moussainssa@outlook.fr">moussainssa@outlook.fr</a>
+			</p>
+			<p class="mb-0">
+				<strong>🔗 LinkedIn :</strong>
+				<a href="https://www.linkedin.com/in/moussa-inssa" target="_blank">Moussa INSSA</a>
+			</p>
+		</div>
+	</div>
+
+	<h3>Me contacter :</h3>
+	<div class="card mb-3">
+		<div class="card-body">
+			<p>Si vous souhaitez en savoir plus sur la plateforme ou proposer des améliorations, n’hésitez pas à me contacter par e-mail.</p>
+
+			<p  class="mb-0 text-center">
+				<strong>Merci d'utiliser Gestion FM pour suivre vos compétitions sportives en toute simplicité !</strong>
+			</p>
+		</div>
+	</div>
+
+	<div class="card bg-version mb-3">
+		<div class="card-body">
+			<p  class="mb-0 text-center">
+				<code><strong>Gestion FM</strong> - Version 1.0</code>
+			</p>
+		</div>
+	</div>
+</div>{% endblock %}
